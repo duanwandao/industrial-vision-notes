@@ -1,0 +1,14 @@
+# Local verification snapshots
+.整理校验/
+
+# Editor and build output
+.vs/
+bin/
+obj/
+*.user
+*.suo
+
+# Local secrets
+.env
+.env.*
+!.env.example
