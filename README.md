@@ -1,5 +1,7 @@
 # 工业机器视觉上位机学习知识库
 
+本次增量：[STEP 7-Micro/WIN SMART 工程、上传下载与 RUN/STOP](02-PLC/STEP7-MicroWIN-SMART.md)（[覆盖报告](07-Study-Plan/2026-10-31-STEP7-MicroWIN-SMART-Coverage.md)）。
+
 本批入口：[2026-10-31 四主题学习索引、问题覆盖与修改报告](07-Study-Plan/2026-10-31-Coverage.md)。
 
 面向 C# 工业机器视觉上位机工程师求职与实践的增量学习仓库。
