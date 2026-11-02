@@ -72,6 +72,10 @@
 
 关联：[PLC 基础](PLC-Basics.md)、[通信与双网卡](Communication.md)、[运动、回零和限位](Motion-Control.md)。
 
+## 2026-11-02 运动控制向导与在线监控补充
+
+参见 [运动向导 / GOTO / 程序状态与状态图](STEP7-Motion-Wizard-Online.md)。截图中的 `AXIS1_GOTO` 类运动块、`P` 上升沿和 I/O 映射仅反映**老师工程画面**；未核实 CPU 中运行的程序、实际接线及参数，不对真实设备写入或强制变量。在线监控优先读状态图/程序状态，不能把编译成功等同于联机验证。
+
 ## 参考
 
 [Siemens S7-200 SMART 系统手册](https://support.industry.siemens.com/cs/attachments/109745610/s7-200_SMART_system_manual_en-US.pdf)；需要核对现场 CPU、固件与软件版本。

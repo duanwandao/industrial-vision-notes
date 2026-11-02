@@ -1,5 +1,8 @@
 # 学习进度
 
+2026-11-02：新增 [丝杆/导程/脉冲当量](../02-PLC/Mechanics-and-Pulse-Equivalent.md)、[运动控制板卡/回零/定位](../02-PLC/Motion-Controller-and-Homing.md)、[STEP7 运动向导/在线监控](../02-PLC/STEP7-Motion-Wizard-Online.md)、[模拟量量程换算](../02-PLC/Analog-Scaling.md)，并补充 PLC 四大硬件部分与 MCU 区别。面试与 Anki 新增复习点 Q079–Q096。均为**待学习 / 待验证**；未进行真实 PLC 控制与在线验证。
+
+
 2026-11-01：新增步进驱动器、数字电平/脉冲、PUL/DIR/ENA、绕组电流控制与细分换算内容，详见[步进驱动器与脉冲控制增量报告](2026-11-01-Stepper-Driver-Pulse-Review.md)及[运动控制主笔记](../02-PLC/Motion-Control.md)。已通过照片识读驱动器面板标识，但具体型号、电机铭牌、实际拨码状态、PLC 输出映射与接线仍待核实；学习状态保持待学习/待验证。
 
 2026-10-31：已建立[四主题笔记与 Q001–Q063 追踪](2026-10-31-Coverage.md)，知识状态仍为待学习/待验证。当前 P0 顺序：PLC 基础 → 运动控制 → 通信 → 异步事件 → Jog；关键缺口为 PLC 工程/实际硬件参数及离线异常路径验证。运动与 Jog 停止职责按本批提升为 P0。

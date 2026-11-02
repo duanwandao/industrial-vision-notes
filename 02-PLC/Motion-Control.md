@@ -133,6 +133,13 @@ flowchart LR
  SAFE[独立安全系统] --> DR
 ```
 
+## 2026-11-02 关联增量
+
+- [丝杆、导程、螺距与脉冲当量](Mechanics-and-Pulse-Equivalent.md)：脉冲数、理论位移、速度的系统级换算，以及分辨率≠定位精度。
+- [运动控制板卡、回零与定位](Motion-Controller-and-Homing.md)：运动控制卡与 PLC 区别、回零中止、绝对/相对定位及位置可信性。
+- [STEP 7 运动控制向导、GOTO 和状态监控](STEP7-Motion-Wizard-Online.md)：学习项目截图中的 I/O 映射和运动块。
+- [模拟量量程与工程值换算](Analog-Scaling.md)：4–20mA、0–10V 与缩放计算。
+
 ## 官方图文
 
 [Oriental Motor：步进电机技术手册](https://www.orientalmotor.eu/system/files/document/tech/technicalmanual_stepping_10e.pdf)提供电机/驱动器、脉冲及机构的教学插图；[步进原理](https://www.orientalmotor.com/stepper-motors/technology/stepper-motor-overview.html)用于概念阅读。厂商示例不证明课堂驱动器的型号与接线。
