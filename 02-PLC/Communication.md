@@ -114,3 +114,109 @@ arp -a
 - 使用现有 HslCommunication 项目在获准的测试环境中读取一个已确认的只读地址；不要直接写真实设备输出或运动控制地址。
 
 **学习结论：** 双网卡解决的是电脑同时接入两个网络的问题；IP/掩码决定本地通信范围，路由表决定出接口，ARP 负责本地链路寻址，TCP 端口对应具体通信服务。网络可达、协议通信成功、PLC 数据读写成功和设备安全动作成功是不同层次，必须分别验证。
+
+
+## PLC 与 C# 上位机的应用层握手（2026-11-03）
+
+> 场景：PLC 到位后请求工业相机拍照；C# 上位机采图并运行视觉检测；PLC 读取 OK/NG 结果。以下地址和协议是教学示例，需由项目双方共同约定，不是 S7-200 SMART 固定协议。
+
+### 为什么不建议只发一个短暂置位
+
+例如 C# 执行：
+
+~~~csharp
+plc.Write("M0.0", true);
+await Task.Delay(20);
+plc.Write("M0.0", false);
+~~~
+
+这只是把 PLC 的 M 位短暂置为 1，再恢复为 0。可能出现两种漏接：
+
+1. C# 写入 M 位后，PLC 程序在该位为 1 的时间段内没有执行到读取它，等程序再次读取时位已经回到 0。
+2. PLC 把请求位短暂置 1 又清零，而 C# 每 100 ms 才轮询一次，读取时可能前后都是 0。
+
+第一种是 PLC 程序扫描与 M 位状态保持之间的时序问题；第二种是 PLC 状态变化与上位机轮询之间的时序问题。**M 位不是输入映像区**，不要把“C# 写 M 位”和“物理输入 I 点采样”混为一谈。
+
+对物理数字输入的短脉冲，普通输入映像也可能漏采；应按 CPU/输入点规格评估输入滤波、脉冲捕捉、高速计数器或中断。对 PLC 与 PC 之间的业务命令，通常优先设计保持请求直到对方确认的握手。
+
+### 握手不等于 TCP 三次握手
+
+TCP 三次握手用于建立 TCP 连接；这里讨论的是 PLC 与 C# 应用程序之间的**业务层握手**。TCP 连接成功、HslCommunication 写操作返回成功，都不能单独证明 PLC 程序已经接受命令或相机已经完成检测。
+
+### 示例地址表
+
+| 地址 | 变量 | 写入方 | 含义 |
+|---|---|---|---|
+| M0.0 | Trigger | PLC | 请求执行一次视觉检测，收到确认前保持为 1 |
+| M0.1 | TriggerAck | C# | 上位机已接受本次请求 |
+| M0.2 | Busy | C# | 正在采图/检测/等待结果确认 |
+| M0.3 | Done | C# | 结果数据已写好且有效 |
+| M0.4 | ResultAck | PLC | PLC 已读取并消费本次结果 |
+| M0.5 | Ready | C# | 上位机空闲且允许接受新请求 |
+| VW200 | RequestId | PLC | 本次请求编号 |
+| VW202 | ResultId | C# | 本次结果对应的请求编号 |
+| VW204 | ResultCode | C# | 示例：0=NG，1=OK，2=检测错误 |
+
+这些地址仅供说明。正式项目应统一地址表、数据类型、读写权限、默认值、超时、复位条件和任务编号回绕规则，不能直接覆盖现有工程地址。
+
+### 一次完整的握手时序
+
+1. **空闲**：C# 设置 Ready=1，Busy=0，Done=0；所有上一笔握手位已复位。
+2. **PLC 发请求**：PLC 先写入新的 RequestId，再设置 Trigger=1，并保持 Trigger 和 RequestId 不变，直到收到 TriggerAck。
+3. **C# 接受请求**：上位机轮询到 Trigger=1，确认 Ready=1 且没有正在处理的任务，读取 RequestId，设置 Ready=0、Busy=1、TriggerAck=1。TriggerAck 表示“已接受”，不是“检测已完成”。
+4. **PLC 清请求**：PLC 看到 TriggerAck=1 后清除 Trigger。
+5. **C# 结束请求交接**：C# 观察到 Trigger=0 后清除 TriggerAck=0；Busy 继续保持 1，视觉任务仍可在后台运行。
+6. **C# 发布结果**：采图和算法完成后，先写 ResultId、ResultCode（以及需要的测量值/错误码），确认每次写操作成功后，最后才设置 Done=1。Done 和结果数据保持稳定。
+7. **PLC 确认结果**：PLC 看到 Done=1，核对 ResultId 与 RequestId 一致，读取并保存结果，然后设置 ResultAck=1。
+8. **C# 撤销 Done**：上位机看到 ResultAck=1 后清除 Done=0。
+9. **PLC 清除结果确认**：PLC 看到 Done=0 后清除 ResultAck=0。
+10. **回到空闲**：C# 看到 ResultAck=0，确认事务结束后设置 Busy=0、Ready=1。PLC 必须等 Ready=1 且上一笔握手位清零后才能发下一笔请求。
+
+~~~mermaid
+sequenceDiagram
+    participant PLC
+    participant PC as C# 上位机
+    participant CAM as 工业相机
+    participant HAL as HALCON
+    PLC->>PLC: 写 RequestId=n
+    PLC->>PC: Trigger=1（保持）
+    PC->>PC: 检查 Ready/Busy/RequestId
+    PC->>PLC: TriggerAck=1, Busy=1, Ready=0
+    PLC->>PLC: 看到 TriggerAck，清 Trigger
+    PC->>PLC: 看到 Trigger=0，清 TriggerAck
+    PC->>CAM: 采集图像
+    CAM-->>PC: 返回图像
+    PC->>HAL: 执行定位/测量/缺陷检测
+    HAL-->>PC: 返回结果
+    PC->>PLC: 写 ResultId/ResultCode，最后 Done=1
+    PLC->>PLC: 核对 ID，读取并保存结果
+    PLC->>PC: ResultAck=1
+    PC->>PLC: 清 Done=0
+    PLC->>PLC: 看到 Done=0，清 ResultAck=0
+    PC->>PLC: 看到 ResultAck=0，Busy=0, Ready=1
+~~~
+
+### C# + HslCommunication 实现要点
+
+- 在后台任务/工作线程中轮询 PLC，避免同步通信阻塞 WinForms UI 线程；UI 状态更新再通过 WinForms UI 线程切回。
+- 每次读取/写入都检查 HslCommunication 的 OperateResult.IsSuccess，失败时记录地址、操作、时间和错误信息；不要只 catch 后忽略结果。
+- TriggerAck 只在上位机已接受请求、已记录 RequestId 后置位；同一个 RequestId 不得因多次轮询而重复启动检测。
+- 结果发布顺序是先写结果数据与 ResultId，最后写 Done。任一步失败，不得提前宣布 Done。
+- 不能把 plc.Write(...) 成功等同于业务完成；它只说明通信库报告本次写操作成功，PLC 程序仍需通过状态握手确认消费。
+- 若底层是同步 HslCommunication API，可将通信调用放入受控后台任务；同一个 PLC 客户端的并发访问应遵守项目中的锁/串行化策略。不要在 UI Timer 回调中执行可能长时间阻塞的同步通信。
+- 超时应分开设计：请求接收超时、视觉检测超时、结果确认超时、通信断线超时。超时后进入明确故障状态，不要无条件重发并造成重复拍照。
+- 断线重连后先读取 Trigger/Busy/Done/Ack/RequestId/ResultId，再决定恢复、等待或人工复位；不要直接把所有握手位清零。
+- RequestId 用于识别一笔事务和去重；还要约定计数器回绕、PLC/PC 重启、旧结果残留和重复请求的处理。
+
+### 最小状态约束
+
+- Trigger=1：请求尚未被上位机接受，PLC 不得提前清除。
+- TriggerAck=1：上位机已接受请求；PLC 可撤销 Trigger。
+- Busy=1：本次检测事务尚未完全结束。
+- Done=1：ResultId/ResultCode 等结果字段有效且保持稳定。
+- ResultAck=1：PLC 已消费结果；上位机可以撤销 Done。
+- Ready=1：上位机空闲、通信健康、无未完成事务，允许下一次请求。
+
+握手能提高命令交接可靠性，但不是安全回路。急停、限位、驱动安全功能和设备危险能量隔离不能由 C# 握手或普通 M 位替代。
+
+相关基础见[PLC 扫描、输入映像与梯形图基础](PLC-Basics.md)。
