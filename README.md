@@ -1,6 +1,6 @@
 # 工业机器视觉上位机学习知识库
 
-最新增量：[2026-11-03 PLC 扫描周期、梯形图与视觉握手](07-Study-Plan/2026-11-03-PLC-Scan-Ladder-Handshake-Coverage.md)（完善 PLC 基础与通信两篇主题笔记，新增 20 张 Anki 卡和面试复习）。
+最新增量：[2026-11-03 PLC 扫描周期、梯形图与视觉握手](07-Study-Plan/2026-11-03-PLC-Scan-Ladder-Handshake-Coverage.md)（完善 PLC 基础与通信两篇主题笔记，修订 3 张已有 Anki 卡、新增 14 张卡和面试复习）。
 
 上一批增量：[2026-11-02 PLC 运动控制、机械传动和量程换算](07-Study-Plan/2026-11-02-PLC-Motion-Coverage.md)（新增 4 篇主题笔记、18 张 Anki 卡、面试复习）。
 
