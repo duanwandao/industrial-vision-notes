@@ -1,0 +1,7 @@
+
+/* 给笔记图片添加阴影和圆角 */
+.markdown-rendered .image-embed img,
+.markdown-source-view.mod-cm6 .image-embed img {
+    border-radius: 8px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
+}
