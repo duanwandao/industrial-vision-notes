@@ -1,11 +1,13 @@
 # 工业机器视觉上位机学习知识库
 
-最新增量：[2026-11-03 PLC 扫描周期、梯形图与视觉握手](07-Study-Plan/2026-11-03-PLC-Scan-Ladder-Handshake-Coverage.md)（完善 PLC 基础与通信两篇主题笔记，修订 3 张已有 Anki 卡、新增 14 张卡和面试复习）。
+最新增量：[2026-11-03 电学基础：电荷、电场、电压、电流与电阻](07-Study-Plan/2026-11-03-Electrical-Fundamentals-Coverage.md)（新增电学基础独立笔记，补充 PLC 前置知识；新增 10 张 Anki 卡与 6 道 P0 面试题）。
 
-上一批增量：[2026-11-02 PLC 运动控制、机械传动和量程换算](07-Study-Plan/2026-11-02-PLC-Motion-Coverage.md)（新增 4 篇主题笔记、18 张 Anki 卡、面试复习）。
+上一批增量：[2026-11-03 PLC 扫描周期、梯形图与视觉握手](07-Study-Plan/2026-11-03-PLC-Scan-Ladder-Handshake-Coverage.md)（完善 PLC 基础与通信两篇主题笔记，修订 3 张已有 Anki 卡、新增 14 张卡和面试复习）。
 
-本次增量：[2026-11-01 步进驱动器与脉冲控制整理报告](07-Study-Plan/2026-11-01-Stepper-Driver-Pulse-Review.md)。
-上一批增量：[STEP 7-Micro/WIN SMART 工程、上传下载与 RUN/STOP](02-PLC/STEP7-MicroWIN-SMART.md)（[覆盖报告](07-Study-Plan/2026-10-31-STEP7-MicroWIN-SMART-Coverage.md)）。
+更早增量：[2026-11-02 PLC 运动控制、机械传动和量程换算](07-Study-Plan/2026-11-02-PLC-Motion-Coverage.md)（新增 4 篇主题笔记、18 张 Anki 卡、面试复习）。
+
+历史增量：[2026-11-01 步进驱动器与脉冲控制整理报告](07-Study-Plan/2026-11-01-Stepper-Driver-Pulse-Review.md)。
+历史增量：[STEP 7-Micro/WIN SMART 工程、上传下载与 RUN/STOP](02-PLC/STEP7-MicroWIN-SMART.md)（[覆盖报告](07-Study-Plan/2026-10-31-STEP7-MicroWIN-SMART-Coverage.md)）。
 
 本批入口：[2026-10-31 四主题学习索引、问题覆盖与修改报告](07-Study-Plan/2026-10-31-Coverage.md)。
 
