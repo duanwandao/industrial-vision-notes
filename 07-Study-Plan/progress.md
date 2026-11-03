@@ -1,6 +1,6 @@
 # 学习进度
 
-2026-11-03：完善 [PLC 基础](../02-PLC/PLC-Basics.md) 中的输入映像区、物理/逻辑触点、扫描、P/N、STL、S/R、自锁与互锁；在 [PLC 通信](../02-PLC/Communication.md) 中增加 PLC—C# 视觉检测应用层握手。面试复习新增 10 题，Anki 新增 Q097–Q116（20 张）。内容均为**待学习 / 待验证**；地址表和握手流程是教学示例，未连接或控制真实设备。
+2026-11-03：完善 [PLC 基础](../02-PLC/PLC-Basics.md) 中的输入映像区、物理/逻辑触点、扫描、P/N、STL、S/R、自锁与互锁；在 [PLC 通信](../02-PLC/Communication.md) 中增加 PLC—C# 视觉检测应用层握手。面试复习新增 10 题，Anki 修订 Q007/Q008/Q92，并新增 Q097–Q110（14 张）。内容均为**待学习 / 待验证**；地址表和握手流程是教学示例，未连接或控制真实设备。
 
 2026-11-02：新增 [丝杆/导程/脉冲当量](../02-PLC/Mechanics-and-Pulse-Equivalent.md)、[运动控制板卡/回零/定位](../02-PLC/Motion-Controller-and-Homing.md)、[STEP7 运动向导/在线监控](../02-PLC/STEP7-Motion-Wizard-Online.md)、[模拟量量程换算](../02-PLC/Analog-Scaling.md)，并补充 PLC 四大硬件部分与 MCU 区别。面试与 Anki 新增复习点 Q079–Q096。均为**待学习 / 待验证**；未进行真实 PLC 控制与在线验证。
 
