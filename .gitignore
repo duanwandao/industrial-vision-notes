@@ -12,3 +12,8 @@ obj/
 .env
 .env.*
 !.env.example
+
+# Obsidian local state and downloaded plugin bundles
+.obsidian/workspace*.json
+.obsidian/plugins/
+.obsidian/image-converter-image-alignments.json

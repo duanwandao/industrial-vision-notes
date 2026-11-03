@@ -17,6 +17,7 @@
 - `06-Anki/`：按主题维护 UTF-8 CSV 卡片。
 - `07-Study-Plan/`：学习路线、缺口与进度。
 - `templates/`：新笔记模板。
+- [待整理问题与课堂任务](todo.md)：原始学习记录，待学习、待核实；配图保存在 `assets/`。
 
 新内容从 Inbox 开始；正式笔记标注掌握状态，AI 不会仅凭文档完整度推定你已掌握。详见 [维护规范](AGENTS.md) 和 [学习进度](07-Study-Plan/progress.md)。
 
