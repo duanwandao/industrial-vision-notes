@@ -14,7 +14,7 @@
 | S/R、普通线圈、自锁 | [PLC 基础](../02-PLC/PLC-Basics.md) | 置位/复位保持、位数参数、自锁公式和执行顺序 |
 | 软件/硬件互锁 | [PLC 基础](../02-PLC/PLC-Basics.md) | 正反转示例、冲突请求仲裁与安全边界 |
 | 短暂置位与应用层握手 | [PLC 通信](../02-PLC/Communication.md) | Trigger/TriggerAck、Busy/Ready、Done/ResultAck、任务编号 |
-| 面试与记忆卡 | [P0 面试复习](../05-Interview/P0-Review.md)、[Anki CSV](../06-Anki/PLC.csv) | 新增 10 道口述题、20 张卡（Q097–Q116） |
+| 面试与记忆卡 | [P0 面试复习](../05-Interview/P0-Review.md)、[Anki CSV](../06-Anki/PLC.csv) | 新增 10 道口述题、14 张卡（Q097–Q110），并修订 Q007/Q008/Q92 三张已有卡 |
 
 原始问题摘要：[2026-11-03 Inbox](../00-Inbox/2026-11-03_PLC扫描与梯形图学习问题.md)。
 
