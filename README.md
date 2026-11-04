@@ -1,6 +1,6 @@
 # 工业机器视觉上位机学习知识库
 
-最新增量：[2026-11-04 三相交流、电容与继电器/接触器](07-Study-Plan/2026-11-04-Three-Phase-Capacitors-Relays-Coverage.md)（补充交流瞬时值/有效值、三相电流与缺相、RCD 三相检测、电容充放电；新增继电器与接触器专题、19 张 Anki 和面试复习）。
+最新增量：[2026-11-04 串口、以太网与 RS-485；机器视觉岗位路线校准](07-Study-Plan/2026-11-04-Serial-Ethernet-RS485-Coverage.md)（补充串口/UART、RS-485、Ethernet、Modbus RTU/TCP；新增 8 张 Anki，并把学习重心校准到 C# 上位机、工业相机 SDK、成像与视觉算法）。
 
 上一批增量：[2026-11-04 工业电气、PLC 输入与变频器](07-Study-Plan/2026-11-04-Industrial-Electrics-Coverage.md)（4 篇专题笔记、输入与电气保护要点、面试口述题和 Anki 卡片）。
 
@@ -15,7 +15,7 @@
 
 本批入口：[2026-10-31 四主题学习索引、问题覆盖与修改报告](07-Study-Plan/2026-10-31-Coverage.md)。
 
-面向 C# 工业机器视觉上位机工程师求职与实践的增量学习仓库。
+面向 C# 工业机器视觉上位机工程师求职与实践的增量学习仓库。当前岗位路线见[工业机器视觉学习路线](03-Machine-Vision/README.md)。
 
 ## 使用方式
 
