@@ -1,3 +1,5 @@
+最新增量：[2026-11-04 三相交流、电容与继电器/接触器](07-Study-Plan/2026-11-04-Three-Phase-Capacitors-Relays-Coverage.md)（补充交流瞬时值/有效值、三相电流与缺相、RCD 三相检测、电容充放电；新增继电器与接触器专题、19 张 Anki 和面试复习）。
+
 # 工业机器视觉上位机学习知识库
 
 最新增量：[2026-11-04 工业电气、PLC 输入与变频器](07-Study-Plan/2026-11-04-Industrial-Electrics-Coverage.md)（4 篇专题笔记、输入与电气保护要点、面试口述题和 Anki 卡片）。
