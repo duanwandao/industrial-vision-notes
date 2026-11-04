@@ -143,3 +143,8 @@ flowchart LR
 ## 官方图文
 
 [Oriental Motor：步进电机技术手册](https://www.orientalmotor.eu/system/files/document/tech/technicalmanual_stepping_10e.pdf)提供电机/驱动器、脉冲及机构的教学插图；[步进原理](https://www.orientalmotor.com/stepper-motors/technology/stepper-motor-overview.html)用于概念阅读。厂商示例不证明课堂驱动器的型号与接线。
+
+
+## 2026-11-04 交流电机与变频器关联
+
+4 极电机的同步转速、整流—直流母线—逆变、VFD 与步进驱动器差异见[交流电机、4 极电机与 VFD](AC-Motors-and-VFD.md)；不要将 VFD 的高压直流母线当作 24V 逻辑供电。
