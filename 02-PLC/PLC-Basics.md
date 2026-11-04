@@ -291,3 +291,10 @@ flowchart LR
 ```
 
 [Siemens S7-200 SMART V2.8 系统手册](https://support.industry.siemens.com/cs/attachments/109745610/s7-200_SMART_system_manual_en-US.pdf)：阅读产品概览中的 CPU/扩展模块外形图、安装和接线图。这里只作为学习参考，现场型号/固件尚未确认；参见[配图说明](../07-Study-Plan/Illustrations.md)。
+
+
+### 继电器、接触器与命令/反馈（2026-11-04）
+
+- [继电器与接触器：PLC 小信号如何控制电机动力回路](Relays-and-Contactors.md)
+- 核心区分：C# 启动命令、PLC 逻辑输出位、物理输出/线圈得电、接触器辅助反馈、驱动器/电机实际状态是不同层次。写入 Q/M 成功不等于机械动作完成。
+- 真实输出类型（PNP/NPN 晶体管或继电器触点）、输出组公共端和线圈电流必须按 PLC/接触器完整型号手册确认。
