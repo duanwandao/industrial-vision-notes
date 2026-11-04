@@ -1,6 +1,8 @@
 # 工业机器视觉上位机学习知识库
 
-最新增量：[2026-11-03 电学基础：电荷、电场、电压、电流与电阻](07-Study-Plan/2026-11-03-Electrical-Fundamentals-Coverage.md)（新增电学基础独立笔记，补充 PLC 前置知识；新增 10 张 Anki 卡与 6 道 P0 面试题）。
+最新增量：[2026-11-04 工业电气、PLC 输入与变频器](07-Study-Plan/2026-11-04-Industrial-Electrics-Coverage.md)（4 篇专题笔记、输入与电气保护要点、面试口述题和 Anki 卡片）。
+
+前次增量：[2026-11-03 电学基础：电荷、电场、电压、电流与电阻](07-Study-Plan/2026-11-03-Electrical-Fundamentals-Coverage.md)（新增电学基础独立笔记，补充 PLC 前置知识；新增 10 张 Anki 卡与 6 道 P0 面试题）。
 
 上一批增量：[2026-11-03 PLC 扫描周期、梯形图与视觉握手](07-Study-Plan/2026-11-03-PLC-Scan-Ladder-Handshake-Coverage.md)（完善 PLC 基础与通信两篇主题笔记，修订 3 张已有 Anki 卡、新增 14 张卡和面试复习）。
 
