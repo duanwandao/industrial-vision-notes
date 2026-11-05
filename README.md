@@ -1,5 +1,7 @@
 # 工业机器视觉上位机学习知识库
 
+最新增量：[2026-11-05 C# partial、WinForms 生命周期与可空类型](07-Study-Plan/2026-11-05-CSharp-WinForms-Lifecycle-Coverage.md)（新增 C# 专题笔记、索引、14 张 Anki 卡和 P0 面试复习；所有内容待学习/待验证）。
+
 最新增量：[2026-11-04 串口、以太网与 RS-485；机器视觉岗位路线校准](07-Study-Plan/2026-11-04-Serial-Ethernet-RS485-Coverage.md)（补充串口/UART、RS-485、Ethernet、Modbus RTU/TCP；新增 8 张 Anki，并把学习重心校准到 C# 上位机、工业相机 SDK、成像与视觉算法）。
 
 上一批增量：[2026-11-04 工业电气、PLC 输入与变频器](07-Study-Plan/2026-11-04-Industrial-Electrics-Coverage.md)（4 篇专题笔记、输入与电气保护要点、面试口述题和 Anki 卡片）。
@@ -20,7 +22,7 @@
 ## 使用方式
 
 - `00-Inbox/`：保存课堂原始记录；整理时保留原文。
-- `01-CSharp/`、`02-PLC/`、`03-Machine-Vision/`、`04-Industrial-Projects/`：存放经核对的主题笔记。
+- [`01-CSharp/`](01-CSharp/README.md)、`02-PLC/`、`03-Machine-Vision/`、`04-Industrial-Projects/`：存放经核对的主题笔记；C# 专题入口见 [C# 笔记索引](01-CSharp/README.md)。
 - `05-Interview/`：跨主题面试复习资料。
 - `06-Anki/`：按主题维护 UTF-8 CSV 卡片。
 - `07-Study-Plan/`：学习路线、缺口与进度。

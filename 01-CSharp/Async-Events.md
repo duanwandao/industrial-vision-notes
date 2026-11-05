@@ -59,3 +59,8 @@ await 不等于后台线程；停止等待不等于撤销已经发送的指令�
 - [Microsoft：WinForms 事件](https://learn.microsoft.com/en-us/dotnet/desktop/winforms/forms/events)
 - [Microsoft：TaskCompletionSource<T>](https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.taskcompletionsource-1)
 - [Microsoft：跨线程操作控件](https://learn.microsoft.com/en-us/dotnet/desktop/winforms/controls/how-to-make-thread-safe-calls)
+
+
+## 相关专题
+
+窗体构造、设计器初始化、资源释放和可空类型见 [C# partial、WinForms 窗体生命周期与可空类型](WinForms-Lifecycle-and-Nullability.md)。尤其要区分取消后台任务、停止设备采集与 Dispose 资源：它们不是同一件事。

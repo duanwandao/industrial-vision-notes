@@ -130,3 +130,23 @@
 7. **P0：上位机机器视觉工程师需要把 UART 底层学到什么程度？** 能看懂串口参数、理解 UART 帧基本组成并排查常见配置错误即可；优先掌握相机 SDK、图像采集、C# 异步/线程、视觉算法和 PLC 握手，芯片内部采样与电路设计暂缓。
 
 以上为岗位知识边界与理论复习，不代表已完成真实 RS-485 接线、串口抓包、相机采集或 PLC 通信验证。关联：[PLC 通信](../02-PLC/Communication.md)、[机器视觉学习路线](../03-Machine-Vision/README.md)。
+
+
+## 2026-11-05 C# partial、WinForms 生命周期与可空类型（Q170–Q183）
+
+1. **P0：partial 是继承吗？** 不是；它把同一个类型拆分到多个源文件，编译时组合为一个类型。
+2. **P0：partial 的不同文件能访问 private 字段吗？** 能；它们是同一类型的不同部分。
+3. **P0：InitializeComponent 是什么？** WinForms 设计器通常生成的普通方法，用于初始化设计器管理的窗体、控件和组件，不是 C# 关键字。
+4. **P0：new Form1() 的初始化大致经过什么？** 创建对象并执行构造过程；Form1 构造方法调用 InitializeComponent，再按项目设计初始化布局和运行行为；随后窗体加载并进入消息循环。
+5. **P0：InitializeComponent 与自定义 InitializeLayout 有什么区别？** 前者通常由设计器生成；后者是项目自行编写的界面创建逻辑。本项目主要 UI 在 Layout 文件中动态创建。
+6. **P1：SuspendLayout/ResumeLayout 会暂停 UI 线程吗？** 不会；它们控制布局逻辑的暂挂与恢复，不暂停线程或消息循环。
+7. **P0：components 容器和 Controls 控件树有什么区别？** IContainer 管理登记其中的组件（如 Timer）；Controls 管理可视控件父子关系，窗体基类负责清理控件树。
+8. **P0：Dispose(bool) 为什么要调用 base.Dispose(disposing)？** 让 Form 基类继续释放它拥有的资源；重写方法不能漏掉基类清理。
+9. **P0：只写一个 Dispose() 普通方法会自动执行吗？** 不会；应通过 IDisposable/using 或明确的对象生命周期触发释放。
+10. **P0：Close 与 Dispose 的区别？** Close 请求关闭窗体；Dispose 释放资源。ShowDialog 模态窗体关闭后，调用方通常仍要 Dispose。
+11. **P0：int? 和 Nullable<int> 有什么关系？** 两者等价；Nullable<T> 是可空值类型，T 必须是非可空值类型。
+12. **P0：string? 是 Nullable<string> 吗？** 不是；它是可空引用类型注解，帮助编译器静态分析，不会创建包装对象，也不提供运行时防 null。
+13. **P0：?.、??、??= 有何区别？** ?. 在左侧非 null 时访问成员；?? 提供 null 备用值；??= 只在左侧为 null 时赋值。
+14. **P0：检测结果为 null 和 0 有何区别？** null 表示尚无结果/未知；0 是有效数值，可能表示检测完成且没有缺陷。
+
+本批理解证据：本轮完成文字讲解与代码阅读；尚未记录断点观察、控制台代码运行或真实 SDK 资源释放验证。关联：[C# WinForms 生命周期与可空类型](../01-CSharp/WinForms-Lifecycle-and-Nullability.md)、[C# 异步与 UI 线程](../01-CSharp/Async-Events.md)。

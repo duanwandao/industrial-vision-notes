@@ -1,5 +1,7 @@
 # 学习进度
 
+2026-11-05（C# partial、WinForms 生命周期与可空类型）：新增 [C# 专题笔记](../01-CSharp/WinForms-Lifecycle-and-Nullability.md) 和 [C# 笔记索引](../01-CSharp/README.md)，梳理 partial、构造方法、InitializeComponent、InitializeLayout/Behavior、OnLoad、Dispose、IDisposable、Close/Dispose、Nullable<T>、可空引用注解及 ?. / ?? / ??=；Anki 新增 Q170–Q183（14 张），面试复习同步补充。**状态保持待学习 / 待验证**：目前是文字讲解与代码阅读，尚未记录 Visual Studio 断点观察、控制台示例运行或真实设备 SDK 释放验证。下一步在 .NET 8 WinForms 模拟项目中验证构造/关闭顺序，并单独练习 IDisposable/using。
+
 2026-11-04（串口、以太网与 RS-485；求职方向校准）：补充[PLC 通信](../02-PLC/Communication.md)中的串口/UART、RS-485 差分接口、以太网协议分层及 Modbus RTU/TCP 对比；新增[工业机器视觉上位机学习路线](../03-Machine-Vision/README.md)、面试复习和 Anki Q162–Q169（8 张）。用户明确目标是 C# 上位机机器视觉岗位，因此将 UART 底层与电路设计降为 P2，将 RS-485/Modbus RTU 基础配置定为 P1；P0 聚焦 C#/.NET、异步与 UI 线程、工业相机 SDK/图像采集、成像与视觉算法、PLC 通信握手和部署诊断。**本轮仅整理理论，没有进行串口接线、抓包、相机采集或 PLC 通信实测。**
 
 2026-11-04（交流电、三相电机、电容与继电器/接触器）：在已有电学基础上补充[交流瞬时值/有效值与电容](../02-PLC/Electrical-Fundamentals.md)、[三相电流/中性线/缺相](../02-PLC/AC-Motors-and-VFD.md)、[RCD 三相检测与电机保护](../02-PLC/Electrical-Protection.md)，并新增[继电器与接触器](../02-PLC/Relays-and-Contactors.md)。面试复习新增 15 题，Anki 新增 Q143–Q161（19 张）。用户正确回答三相三线电机无需 N、运行中缺相可能继续转动并过热、过载故障原因未排除时不应自动重启；负电流/有效值、电容充放电、接触器线圈排查仍需复述。**未进行真实接线、带电测量或电机故障实验。**
