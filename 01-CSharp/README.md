@@ -4,9 +4,11 @@
 
 ## 专题
 
+- [C# 委托与事件](Delegates-and-Events.md)：Delegate、Action/Func/Predicate、多播委托、Callback、event、EventHandler<TEventArgs>、WinForms 与相机事件、线程与退订生命周期。
+
 - [命名空间、访问控制、继承、抽象类与接口](OOP-Types-Access-Modifiers-and-Polymorphism.md)：namespace、using、Assembly、internal/protected、继承、abstract、virtual/override、interface 与组合。
 - [WinForms 窗体生命周期与可空类型](WinForms-Lifecycle-and-Nullability.md)：partial、构造方法、InitializeComponent、Dispose、IDisposable、Nullable<T>、null 运算符。
-- [异步、事件与 UI 线程](Async-Events.md)：Task、async/await、事件订阅、UI 线程、取消与 TaskCompletionSource。
+- [异步编程与 UI 线程](Async-Events.md)：Task、async/await、取消、UI 线程与 TaskCompletionSource；委托/事件基础见上方专题。
 
 ## 学习建议
 
