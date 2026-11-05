@@ -1,5 +1,7 @@
 # 工业机器视觉上位机学习知识库
 
+最新增量：[2026-11-05 C# namespace、访问控制、继承、抽象类与接口](07-Study-Plan/2026-11-05-CSharp-OOP-Coverage.md)（新增 C# 面向对象专题，补充 14 张 Anki 卡与 P0 面试复习；状态待学习/待验证）。
+
 最新增量：[2026-11-05 C# partial、WinForms 生命周期与可空类型](07-Study-Plan/2026-11-05-CSharp-WinForms-Lifecycle-Coverage.md)（新增 C# 专题笔记、索引、14 张 Anki 卡和 P0 面试复习；所有内容待学习/待验证）。
 
 最新增量：[2026-11-04 串口、以太网与 RS-485；机器视觉岗位路线校准](07-Study-Plan/2026-11-04-Serial-Ethernet-RS485-Coverage.md)（补充串口/UART、RS-485、Ethernet、Modbus RTU/TCP；新增 8 张 Anki，并把学习重心校准到 C# 上位机、工业相机 SDK、成像与视觉算法）。

@@ -150,3 +150,19 @@
 14. **P0：检测结果为 null 和 0 有何区别？** null 表示尚无结果/未知；0 是有效数值，可能表示检测完成且没有缺陷。
 
 本批理解证据：本轮完成文字讲解与代码阅读；尚未记录断点观察、控制台代码运行或真实 SDK 资源释放验证。关联：[C# WinForms 生命周期与可空类型](../01-CSharp/WinForms-Lifecycle-and-Nullability.md)、[C# 异步与 UI 线程](../01-CSharp/Async-Events.md)。
+
+
+## 2026-11-05 C# namespace、访问控制、继承、抽象类与接口（Q184–Q197）
+
+1. **P0：namespace 中的点号表示什么？** 它是限定命名空间名称的层级分隔符，不是对象成员访问符；namespace 是逻辑名称组织，不是文件夹或程序集边界。
+2. **P0：namespace 与 internal 有什么区别？** namespace 组织和限定类型名称；internal 控制访问范围，默认仅当前程序集可见。
+3. **P0：相同 namespace 是否意味着可以访问对方的 internal 类型？** 不意味着；不同程序集即使使用相同 namespace，也不能默认访问对方的 internal 类型。
+4. **P0：using 能绕过 internal 吗？** 不能；using 只让类型名称可以简写，不会添加程序集引用或授予访问权限。
+5. **P0：protected 与 internal 有何区别？** protected 主要依据继承关系开放给派生类；internal 依据程序集边界开放。protected internal 是 OR，private protected 是 AND。
+6. **P0：abstract 方法与 virtual 方法有什么区别？** abstract 没有方法体，非抽象派生类必须 override；virtual 有默认实现，派生类可选择 override。
+7. **P0：抽象类与接口的核心区别是什么？** 抽象类适合共享实例状态、构造逻辑和基础实现；接口适合描述可由不同类型实现的能力约定。
+8. **P0：C# 类能否继承多个类？如何拥有多种能力？** 只能有一个直接基类，但可以实现多个接口；接口支持统一调用约定。
+9. **P0：什么时候用组合而不是继承？** 表达 has-a 时用组合，例如 InspectionService 持有 ICamera；表达 is-a 时才考虑继承，例如 Camera 是 Device。
+10. **P1：IContainer components = new Container() 说明什么？** 接口类型变量引用具体实现类对象；调用方依赖 IContainer 契约而非 Container 实现细节。
+
+本批为文字讲解与代码阅读复习，尚未记录用户独立完成跨程序集编译实验或运行相机抽象示例。关联：[C# 面向对象专题](../01-CSharp/OOP-Types-Access-Modifiers-and-Polymorphism.md)、[WinForms 生命周期与可空类型](../01-CSharp/WinForms-Lifecycle-and-Nullability.md)。
