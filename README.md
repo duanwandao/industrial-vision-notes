@@ -1,5 +1,7 @@
 # 工业机器视觉上位机学习知识库
 
+最新增量：[2026-11-05 跨语言编程抽象与软件设计](08-Programming-Fundamentals/Abstraction-and-Software-Design.md)（从语言特性、设计模式、编译器与运行时、框架/SDK 到工业视觉系统，建立跨语言的抽象视角；状态待学习/待验证）。
+
 最新增量：[2026-11-05 C# namespace、访问控制、继承、抽象类与接口](07-Study-Plan/2026-11-05-CSharp-OOP-Coverage.md)（新增 C# 面向对象专题，补充 14 张 Anki 卡与 P0 面试复习；状态待学习/待验证）。
 
 最新增量：[2026-11-05 C# partial、WinForms 生命周期与可空类型](07-Study-Plan/2026-11-05-CSharp-WinForms-Lifecycle-Coverage.md)（新增 C# 专题笔记、索引、14 张 Anki 卡和 P0 面试复习；所有内容待学习/待验证）。
@@ -28,6 +30,7 @@
 - `05-Interview/`：跨主题面试复习资料。
 - `06-Anki/`：按主题维护 UTF-8 CSV 卡片。
 - `07-Study-Plan/`：学习路线、缺口与进度。
+- `08-Programming-Fundamentals/`：跨语言编程思维、抽象、设计模式与软件设计基础。
 - `templates/`：新笔记模板。
 - [待整理问题与课堂任务](todo.md)：原始学习记录，待学习、待核实；配图保存在 `assets/`。
 
