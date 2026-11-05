@@ -166,3 +166,18 @@
 10. **P1：IContainer components = new Container() 说明什么？** 接口类型变量引用具体实现类对象；调用方依赖 IContainer 契约而非 Container 实现细节。
 
 本批为文字讲解与代码阅读复习，尚未记录用户独立完成跨程序集编译实验或运行相机抽象示例。关联：[C# 面向对象专题](../01-CSharp/OOP-Types-Access-Modifiers-and-Polymorphism.md)、[WinForms 生命周期与可空类型](../01-CSharp/WinForms-Lifecycle-and-Nullability.md)。
+
+
+## 2026-11-05 C# Delegate 与 Event 复习（Q198–Q210）
+
+1. **P0：Delegate 是什么？** 一种类型安全的可调用对象类型，可以保存符合签名的方法并通过委托调用；绑定的方法参数与返回类型必须兼容。
+2. **P0：Action、Func 的区别？** Action 不返回值；Func 的最后一个泛型参数是返回类型，前面的参数是输入类型。
+3. **P0：Callback 是什么？** 调用方把方法交给另一个对象，对方在某个时机调用它；相机采集完成通知上位机就是典型场景。
+4. **P0：event 与公开委托字段有什么区别？** event 限制外部只能订阅/退订，触发权保留在声明事件的类型；公开委托字段可能被外部覆盖或直接调用。
+5. **P0：事件为什么用 += 和 -=？** 分别通过 add/remove 访问器添加和移除处理委托；+= 不会立即执行处理器。
+6. **P0：sender 和 EventArgs 分别是什么？** sender 表示事件发布者；EventArgs 或派生类携带事件数据。
+7. **P0：事件是异步的吗？** 不是；普通事件处理器通常在触发事件的线程同步执行，event 不会自动创建线程。
+8. **P0：相机事件回调中为什么不能直接更新 Label？** SDK 可能在采集线程触发事件，WinForms 控件应通过 Invoke/BeginInvoke 切回 UI 线程。
+9. **P1：为什么关闭窗体时需要退订相机事件？** 长生命周期发布者可能持有订阅者引用，导致窗体无法及时回收或关闭后继续收到回调。
+
+关联：[C# 委托与事件](../01-CSharp/Delegates-and-Events.md)、[异步编程与 UI 线程](../01-CSharp/Async-Events.md)。本批为口述练习，尚未验证真实相机 SDK。
