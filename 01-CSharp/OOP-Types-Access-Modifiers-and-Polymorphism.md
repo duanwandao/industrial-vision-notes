@@ -451,7 +451,10 @@ public static class Program
 {
     public static void Main()
     {
-        ICamera camera = new BaslerCamera();
+        var device = new BaslerCamera();
+        device.Connect();
+
+        ICamera camera = device;
         var inspection = new InspectionService(camera);
         inspection.Start();
     }
@@ -471,7 +474,8 @@ public static class Program
 ## 9. 与此前 WinForms 知识的联系
 
 ```csharp
-IContainer? components = new Container();
+System.ComponentModel.IContainer? components =
+    new System.ComponentModel.Container();
 ```
 
 - IContainer 是接口类型。
