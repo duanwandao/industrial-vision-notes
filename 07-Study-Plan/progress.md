@@ -1,5 +1,8 @@
 # 学习进度
 
+2026-11-05（跨语言编程抽象与软件设计）：新增[跨语言编程基础专题](../08-Programming-Fundamentals/Abstraction-and-Software-Design.md)，区分语言语法、编译器转换、运行时/类库、框架/SDK、设计模式与软件架构；用属性、泛型、接口、委托/事件、async/await、using 和工业相机采集流程说明抽象的价值、边界与代价。**状态保持待学习 / 待验证**：本轮为概念整理，尚未完成 ICamera / MockCamera 替换实现练习，也未验证相机 SDK 的真实回调线程与缓冲区生命周期。下一步通过模拟相机练习依赖抽象，并解释事件线程与 UI 调度的区别。
+
+
 2026-11-05（C# Delegate 与 Event）：新增 [C# 委托与事件专题](../01-CSharp/Delegates-and-Events.md)，梳理自定义委托、方法签名匹配、Action/Func/Predicate、多播委托、Callback、event 的外部访问限制、add/remove、sender、EventArgs、EventHandler<TEventArgs>、WinForms Click 与相机采集事件、同步触发线程、UI 跨线程更新和退订生命周期；Anki 新增 Q198–Q210（13 张），P0 面试复习同步补充。**状态保持待学习 / 待验证**：目前为文字讲解与代码阅读，尚未记录用户独立完成 DelegateDemo、CameraEventDemo 或 WinForms 跨线程实验。下一步完成三个委托练习、相机事件多订阅者/退订实验，再验证 UI 线程切换。
 
 2026-11-05（C# namespace、访问控制、继承、抽象类与接口）：新增 [C# 面向对象专题](../01-CSharp/OOP-Types-Access-Modifiers-and-Polymorphism.md)，梳理 dotted namespace、file-scoped namespace、using、Assembly/internal、protected、继承/base、abstract、virtual/override、interface、多接口实现、组合与多态；Anki 新增 Q184–Q197（14 张），P0 面试复习同步补充。**状态保持待学习 / 待验证**：本轮是文字讲解与代码阅读，尚未记录用户独立运行示例、跨程序集访问实验或 Visual Studio 调试验证。下一步完成 namespace/internal 双程序集实验，并实现 DeviceBase + ICamera + InspectionService 模拟项目。
@@ -27,6 +30,8 @@
 状态仅在有明确反馈或自测/实践证据时升级。
 
 | 知识点 | 状态 | 优先级 | 前置/备注 |
+|---|---|---|---|
+| 跨语言编程抽象与软件设计 | 待学习 / 待验证 | P1 | 区分语言、编译器、运行时/类库、框架/SDK、设计模式与架构；结合 ICamera / MockCamera 实践 |
 |---|---|---|---|
 | C#/.NET 与 WinForms 工程开发 | 待学习 / 待验证 | P0 | 结合已有编程基础，完成可维护的设备上位机界面 |
 | 委托、事件、异步与 UI 线程 | 待学习 / 待验证 | P0 | Delegate/Event、Task、async/await、取消、回调、线程安全 |
