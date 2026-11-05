@@ -4,6 +4,7 @@
 
 ## 专题
 
+- [命名空间、访问控制、继承、抽象类与接口](OOP-Types-Access-Modifiers-and-Polymorphism.md)：namespace、using、Assembly、internal/protected、继承、abstract、virtual/override、interface 与组合。
 - [WinForms 窗体生命周期与可空类型](WinForms-Lifecycle-and-Nullability.md)：partial、构造方法、InitializeComponent、Dispose、IDisposable、Nullable<T>、null 运算符。
 - [异步、事件与 UI 线程](Async-Events.md)：Task、async/await、事件订阅、UI 线程、取消与 TaskCompletionSource。
 

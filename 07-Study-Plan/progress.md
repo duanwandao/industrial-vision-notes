@@ -1,5 +1,7 @@
 # 学习进度
 
+2026-11-05（C# namespace、访问控制、继承、抽象类与接口）：新增 [C# 面向对象专题](../01-CSharp/OOP-Types-Access-Modifiers-and-Polymorphism.md)，梳理 dotted namespace、file-scoped namespace、using、Assembly/internal、protected、继承/base、abstract、virtual/override、interface、多接口实现、组合与多态；Anki 新增 Q184–Q197（14 张），P0 面试复习同步补充。**状态保持待学习 / 待验证**：本轮是文字讲解与代码阅读，尚未记录用户独立运行示例、跨程序集访问实验或 Visual Studio 调试验证。下一步完成 namespace/internal 双程序集实验，并实现 DeviceBase + ICamera + InspectionService 模拟项目。
+
 2026-11-05（C# partial、WinForms 生命周期与可空类型）：新增 [C# 专题笔记](../01-CSharp/WinForms-Lifecycle-and-Nullability.md) 和 [C# 笔记索引](../01-CSharp/README.md)，梳理 partial、构造方法、InitializeComponent、InitializeLayout/Behavior、OnLoad、Dispose、IDisposable、Close/Dispose、Nullable<T>、可空引用注解及 ?. / ?? / ??=；Anki 新增 Q170–Q183（14 张），面试复习同步补充。**状态保持待学习 / 待验证**：目前是文字讲解与代码阅读，尚未记录 Visual Studio 断点观察、控制台示例运行或真实设备 SDK 释放验证。下一步在 .NET 8 WinForms 模拟项目中验证构造/关闭顺序，并单独练习 IDisposable/using。
 
 2026-11-04（串口、以太网与 RS-485；求职方向校准）：补充[PLC 通信](../02-PLC/Communication.md)中的串口/UART、RS-485 差分接口、以太网协议分层及 Modbus RTU/TCP 对比；新增[工业机器视觉上位机学习路线](../03-Machine-Vision/README.md)、面试复习和 Anki Q162–Q169（8 张）。用户明确目标是 C# 上位机机器视觉岗位，因此将 UART 底层与电路设计降为 P2，将 RS-485/Modbus RTU 基础配置定为 P1；P0 聚焦 C#/.NET、异步与 UI 线程、工业相机 SDK/图像采集、成像与视觉算法、PLC 通信握手和部署诊断。**本轮仅整理理论，没有进行串口接线、抓包、相机采集或 PLC 通信实测。**
