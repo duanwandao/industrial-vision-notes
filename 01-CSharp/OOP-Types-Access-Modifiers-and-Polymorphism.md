@@ -159,13 +159,19 @@ public class Camera : Device
     }
 }
 
-var camera = new Camera
+public static class Program
 {
-    Name = "Basler"
-};
+    public static void Main()
+    {
+        var camera = new Camera
+        {
+            Name = "Basler"
+        };
 
-camera.Connect(); // 继承自 Device
-camera.Capture(); // Camera 自己的方法
+        camera.Connect(); // 继承自 Device
+        camera.Capture(); // Camera 自己的方法
+    }
+}
 ```
 
 - Camera : Device 表示 Camera 继承 Device。
@@ -299,8 +305,14 @@ public class BaslerCamera : DeviceBase
     }
 }
 
-DeviceBase device = new BaslerCamera();
-device.Connect();
+public static class Program
+{
+    public static void Main()
+    {
+        DeviceBase device = new BaslerCamera();
+        device.Connect();
+    }
+}
 ```
 
 变量声明类型是 DeviceBase，实际对象类型是 BaslerCamera。调用虚方法时会根据实际对象类型执行重写后的实现，这体现了运行时多态。
@@ -435,9 +447,15 @@ public class InspectionService
     }
 }
 
-ICamera camera = new BaslerCamera();
-var inspection = new InspectionService(camera);
-inspection.Start();
+public static class Program
+{
+    public static void Main()
+    {
+        ICamera camera = new BaslerCamera();
+        var inspection = new InspectionService(camera);
+        inspection.Start();
+    }
+}
 ```
 
 设计意图：
