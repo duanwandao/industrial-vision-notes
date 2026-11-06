@@ -317,6 +317,106 @@ public static class Program
 
 变量声明类型是 DeviceBase，实际对象类型是 BaslerCamera。调用虚方法时会根据实际对象类型执行重写后的实现，这体现了运行时多态。
 
+### 5.1 virtual、override、new 与 sealed：重写和隐藏不是一回事
+
+virtual、abstract 和可继续重写的 override 成员可以被派生类重写；普通非虚成员不能直接使用 override。
+
+~~~csharp
+public class Animal
+{
+    public void Speak()
+    {
+        Console.WriteLine("动物叫");
+    }
+}
+
+public class Dog : Animal
+{
+    public new void Speak()
+    {
+        Console.WriteLine("汪汪");
+    }
+}
+
+Animal animal = new Dog();
+animal.Speak(); // 动物叫：基类成员不是 virtual，按变量静态类型选择
+
+Dog dog = new Dog();
+dog.Speak();    // 汪汪：通过 Dog 类型访问隐藏成员
+~~~
+
+- new 是成员隐藏修饰符，不是创建对象的 new 运算符。
+- new 隐藏基类同名成员，不会建立 override 的运行时虚分派。
+- 若有意隐藏成员，显式写 new 能表达设计意图；省略时编译器通常会给出隐藏成员警告。
+- override 只能重写基类的 virtual、abstract 或可继续重写的 override 成员；不能重写普通非虚成员。
+
+对比真正的重写：
+
+~~~csharp
+public class Animal
+{
+    public virtual void Speak()
+    {
+        Console.WriteLine("动物叫");
+    }
+}
+
+public class Dog : Animal
+{
+    public override void Speak()
+    {
+        Console.WriteLine("汪汪");
+    }
+}
+
+Animal animal = new Dog();
+animal.Speak(); // 汪汪：虚调用按实际对象类型分派
+~~~
+
+### 5.2 sealed 的两种常见用法
+
+**sealed override：禁止后续子类继续重写这个成员，但不禁止继承当前类。**
+
+~~~csharp
+public class Animal
+{
+    public virtual void Speak() { }
+}
+
+public class Dog : Animal
+{
+    public sealed override void Speak()
+    {
+        Console.WriteLine("汪汪");
+    }
+}
+
+public class Poodle : Dog
+{
+    // 可以继承 Dog，但不能再 override Speak()
+}
+~~~
+
+**sealed class：禁止整个类被继承。**
+
+~~~csharp
+public sealed class CameraManager
+{
+}
+
+// class CustomCameraManager : CameraManager { } // 编译错误
+~~~
+
+记忆：
+
+| 写法 | 限制范围 |
+|---|---|
+| sealed override | 只封闭这个被重写的成员，阻止更下一级 override |
+| sealed class | 封闭整个类，禁止派生 |
+
+这些规则同样适用于属性：属性可以是 virtual / abstract，也可以被 override；普通非虚属性不能被 override。
+
+
 ## 6. interface：接口与能力约定
 
 接口用来描述一个类型应当提供哪些能力。实现接口的类需要实现接口要求的成员（除非接口提供默认实现，或实现类本身是抽象类）。
@@ -498,6 +598,11 @@ System.ComponentModel.IContainer? components =
 9. 认为一个类可以继承多个类；C# 只能有一个直接基类，但可以实现多个接口。
 10. 把接口变量当成接口对象；接口不能直接实例化，变量引用的是实现类对象。
 
+11. 认为没有 virtual 的普通成员可以被 override；不可以，new 隐藏与 override 重写是两种不同机制。
+12. 把 new 成员隐藏理解为运行时多态；非虚成员调用通常按变量静态类型解析。
+13. 把 sealed override 理解为禁止继承当前类；它只禁止继续重写该成员。
+14. 把 sealed class 理解为只禁止重写某个方法；它禁止整个类被继承。
+
 ## 11. 动手练习
 
 在独立控制台项目或当前 .NET 8 项目中完成：
@@ -511,6 +616,9 @@ System.ComponentModel.IContainer? components =
 
 **验证边界：** 本笔记依据文字讲解与代码示例整理；尚未记录用户在 Visual Studio 中运行上述练习或完成跨程序集编译验证。示例中的 SDK 调用均为占位说明，不代表真实相机 SDK 已接入。
 
+7. 创建非虚 Animal.Speak 和 Dog 的 new Speak；分别通过 Animal、Dog 类型变量调用，记录输出差异。
+8. 将父类方法改为 virtual、子类改为 override，观察基类类型变量调用时的运行时分派；再尝试 sealed override 和 sealed class，观察编译器限制。
+
 ## 12. 参考资料
 
 - [Microsoft Learn：Namespaces](https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/types/namespaces)
@@ -518,3 +626,7 @@ System.ComponentModel.IContainer? components =
 - [Microsoft Learn：Inheritance](https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/object-oriented/inheritance)
 - [Microsoft Learn：abstract](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/abstract)
 - [Microsoft Learn：Interfaces](https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/types/interfaces)
+
+- [Microsoft Learn：new modifier](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/new-modifier)
+- [Microsoft Learn：sealed](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/sealed)
+- [Microsoft Learn：override](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/override)
