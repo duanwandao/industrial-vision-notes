@@ -36,7 +36,7 @@ int number = await task;
 
 WinForms 的消息循环负责鼠标、重绘和窗口消息。在 UI 线程 Sleep、同步网络调用或 `.Result/.Wait()` 会卡界面，后者还可能与上下文恢复互相等待。原生异步 I/O 优先直接 await；包装同步通信的 Task.Run 会占线程池线程，仍需超时和串行访问。
 
-UI 事件中的 await 默认捕获当前 WinForms 同步上下文，后续通常回 UI 线程；这不是所有 await 的通用保证。后台线程不能直接修改控件；旧 .NET Framework 可用 Invoke/BeginInvoke。现代 .NET 的新 API 不能直接套到本项目 .NET Framework 4.8。
+UI 事件中的 await 默认捕获当前 WinForms 同步上下文，后续通常回 UI 线程；这不是所有 await 的通用保证。后台线程不能直接修改控件；可用 Invoke/BeginInvoke 将委托封送到控件所属线程。Invoke 同步等待，BeginInvoke 提交后立即返回。InvokeRequired 在控件句柄尚未创建时有边界，不能无条件视为 UI 线程检测器。当前 IndustrialVisionInspection 使用 .NET 8 WinForms；Control.InvokeAsync 是 .NET 9 新增 API，不能直接用于 .NET 8。
 
 `button.MouseDown += Handler` 是订阅；`button.Enabled = false` 是属性赋值。Click 发生于一次点击语义，按住 Jog 应分析 MouseDown/MouseUp 等订阅，而非只找 Click。订阅重复会执行多次；长期发布者持有短期订阅者时应适时 `-=`。
 
@@ -66,3 +66,13 @@ await 不等于后台线程；停止等待不等于撤销已经发送的指令�
 委托与事件的基础机制见 [C# 委托与事件](Delegates-and-Events.md)。本篇聚焦 Task、取消和 UI 线程。
 
 窗体构造、设计器初始化、资源释放和可空类型见 [C# partial、WinForms 窗体生命周期与可空类型](WinForms-Lifecycle-and-Nullability.md)。尤其要区分取消后台任务、停止设备采集与 Dispose 资源：它们不是同一件事。
+
+
+## 深入专题：线程、线程池与取消
+
+本篇先建立异步编程和 UI 线程的基础。以下内容另见 [C# 线程、线程池、WinForms UI 封送与协作式取消](Threading-and-Cancellation.md)：
+
+- UI 消息循环、InvokeRequired、Invoke、BeginInvoke；
+- Thread / Task / ThreadPool、Task.Run、Task.Delay 与 Thread.Sleep；
+- 竞态条件、Interlocked、lock、volatile；
+- CancellationTokenSource、CancellationToken、协作式取消与 WinForms 停止流程。
