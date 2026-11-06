@@ -10,6 +10,8 @@
 - [WinForms 窗体生命周期与可空类型](WinForms-Lifecycle-and-Nullability.md)：partial、构造方法、InitializeComponent、Dispose、IDisposable、Nullable<T>、null 运算符。
 - [异步编程与 UI 线程](Async-Events.md)：Task、async/await、取消、UI 线程与 TaskCompletionSource；委托/事件基础见上方专题。
 
+- [C# 参数传递：ref、out 与 in](Parameter-Passing-Ref-Out-In.md)：默认按值传递、引用类型参数、ref/out/in、Try 模式与参数选择。
+
 ## 学习建议
 
 1. 先理解 C# 类型、对象、构造和资源生命周期。
