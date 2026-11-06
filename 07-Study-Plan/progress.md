@@ -1,5 +1,8 @@
 # 学习进度
 
+2026-11-06（C# 线程、线程池、WinForms UI 封送与协作式取消）：新增 [线程与取消专题](../01-CSharp/Threading-and-Cancellation.md)，系统整理 UI 消息循环、InvokeRequired/Invoke/BeginInvoke、Action/Lambda、Thread/Task/ThreadPool、async/await 上下文、Task.Delay/Thread.Sleep、竞态条件、Interlocked、lock、volatile、CancellationTokenSource/Token 与 CTS 生命周期；补充 lambda local、闭包、C# 12 集合表达式和 extern/InternalCall 源码阅读提示。Anki 新增 Q224–Q243（20 张），P0 面试复习同步补充。**状态保持待学习 / 待验证**：本轮完成文字讲解与概念问答，尚未记录用户独立编译运行 ThreadSafetyDemo、CancellationDemo 或 WinFormsThreadDemo，也未连接真实相机 SDK。下一步先完成 counter++ 与 Interlocked 对照实验，再完成可取消循环和 WinForms 开始/停止/关闭收尾练习。
+
+
 2026-11-06（C# 抽象、多态与 ref/out/in）：扩展 [C# 面向对象专题](../01-CSharp/OOP-Types-Access-Modifiers-and-Polymorphism.md)，补充 new 隐藏、sealed override、sealed class 与 override 的分派区别；新增[参数传递专题](../01-CSharp/Parameter-Passing-Ref-Out-In.md)，梳理普通参数、ref/out/in、值类型与引用类型传参、Try 模式及 out 丢弃；Anki 新增 Q211–Q223（13 张），P0 面试复习同步补充。**状态保持待学习 / 待验证**：本轮完成文字讲解、源码阅读与练习设计，尚未记录用户独立编译运行示例。下一步完成 AbstractRefPractice 与 ParameterPassingPractice，重点验证 new/override 分派、sealed 编译限制，以及普通引用类型参数和 ref 的区别。
 
 2026-11-05（跨语言编程抽象与软件设计）：新增[跨语言编程基础专题](../08-Programming-Fundamentals/Abstraction-and-Software-Design.md)，区分语言语法、编译器转换、运行时/类库、框架/SDK、设计模式与软件架构；用属性、泛型、接口、委托/事件、async/await、using 和工业相机采集流程说明抽象的价值、边界与代价。**状态保持待学习 / 待验证**：本轮为概念整理，尚未完成 ICamera / MockCamera 替换实现练习，也未验证相机 SDK 的真实回调线程与缓冲区生命周期。下一步通过模拟相机练习依赖抽象，并解释事件线程与 UI 调度的区别。
@@ -37,7 +40,7 @@
 |---|---|---|---|
 | C#/.NET 与 WinForms 工程开发 | 待学习 / 待验证 | P0 | 结合已有编程基础，完成可维护的设备上位机界面 |
 | C# 类型设计与参数传递 | 待学习 / 待验证 | P0 | abstract/virtual/override/new/sealed；ref/out/in；值类型与引用类型参数语义 |
-| 委托、事件、异步与 UI 线程 | 待学习 / 待验证 | P0 | Delegate/Event、Task、async/await、取消、回调、线程安全 |
+| 委托、事件、异步与 UI 线程 | 待学习 / 待验证 | P0 | Delegate/Event、消息循环、Invoke/BeginInvoke、ThreadPool、Task、async/await、竞态条件、Interlocked/lock/volatile、协作式取消 |
 | 工业相机 SDK 与图像采集 | 待学习 | P0 | 枚举/连接、采集生命周期、软硬触发、回调、缓冲区；型号待确认 |
 | 成像基础：相机、镜头、光源、曝光 | 待学习 | P0 | 视野、工作距离、分辨率、景深和照明 |
 | 图像处理与视觉算法 | 待学习 | P0 | OpenCV/HALCON 基础，按课程与目标岗位选工具 |
