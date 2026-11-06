@@ -198,3 +198,29 @@
 11. **P1：out _ 有什么用途？** 调用方不需要某个输出结果时使用丢弃符号，避免声明并保留无用变量。
 
 关联：[C# 面向对象专题](../01-CSharp/OOP-Types-Access-Modifiers-and-Polymorphism.md)、[C# 参数传递专题](../01-CSharp/Parameter-Passing-Ref-Out-In.md)。本批为文字学习与代码阅读，尚未记录独立编译运行验证。
+
+
+## 2026-11-06 C# 线程、线程池、WinForms UI 封送与协作式取消（Q224–Q243）
+
+1. **P0：WinForms 消息循环是什么？** UI 线程持续获取和分发窗口消息；Application.Run 启动消息循环，UI 线程执行耗时同步工作会延迟处理后续消息。
+2. **P0：InvokeRequired 是什么？** 判断调用线程是否需要封送到控件句柄所属线程；句柄尚未创建时结果有边界，不能盲目视为 UI 线程检测器。
+3. **P0：BeginInvoke 的作用是什么？** 把委托安排到控件所属线程执行，调用方提交后立即返回；它不创建新线程。
+4. **P0：Invoke 与 BeginInvoke 有什么区别？** 两者都把委托安排到控件所属线程；Invoke 同步等待执行完成，BeginInvoke 不等待。Invoke 与 UI 线程 Wait/Result 组合时需警惕死锁。
+5. **P0：Task 和 Thread 是什么关系？** Thread 是执行线程；Task 是工作/异步操作及其完成状态、结果和异常的抽象，Task 不等于专属线程。
+6. **P0：Task.Run 默认把工作交给谁？** 默认提交给 .NET ThreadPool 调度；不保证每个 Task 创建一个新线程或永远绑定同一线程。
+7. **P0：Thread.Sleep 与 Task.Delay 的区别？** Sleep 阻塞当前线程；Delay 异步等待，不需要线程在整个等待期休眠；带 Token 的 Delay 可响应取消。
+8. **P0：什么是竞态条件 / Lost Update？** 多线程执行时序影响结果；例如两个线程同时 counter++，都读取旧值后写回，可能覆盖彼此更新。
+9. **P0：Interlocked.Increment 解决什么问题？** 原子地将整数加一并返回新值，避免普通 ++ 的读改写竞争。
+10. **P0：lock 适合什么场景？** 多个读写步骤必须作为一个整体执行时，用所有相关代码路径共同遵守的同一把锁保护临界区。
+11. **P0：volatile 能让 counter++ 变成线程安全操作吗？** 不能；volatile 提供特定可见性和内存顺序语义，不会把复合读改写操作变成原子操作。
+12. **P0：CancellationTokenSource 与 CancellationToken 的区别？** CTS 发起和管理取消请求；Token 传给任务，由任务检查是否已请求取消。
+13. **P0：Cancel() 会强制终止线程吗？** 不会；它发出协作取消请求，工作代码需检查 Token 或调用支持取消的 API。
+14. **P0：Task.Run(action, token) 能中断已开始运行的委托吗？** 不能自动中断；该 Token 可阻止尚未启动的任务，已运行委托仍需主动检查 Token。
+15. **P0：何时 Dispose CancellationTokenSource？** 相关任务已结束、不再使用其取消资源后；Dispose 不等于 Cancel，也不能替代等待任务收尾。
+16. **P1：WinForms await 后为什么通常能更新控件？** UI 事件中的 await 默认捕获 WinForms SynchronizationContext；等待未完成操作后，后续通常回 UI 上下文，但 ConfigureAwait(false) 等会改变行为。
+17. **P1：Visual Studio 的 lambda local 是 C# 关键字吗？** 不是；它是调试器对 Lambda 内部声明的局部变量的描述。
+18. **P1：Lambda 捕获外部局部变量叫什么？** 闭包/捕获局部变量；捕获会延长变量生命周期，多线程共享访问仍需同步。
+19. **P1：C# 12 的 ["A", "B"] 是什么？** 集合表达式；在 string[] 等明确目标类型下创建集合，不是对象初始化器或 AddRange。
+20. **P1：extern + InternalCall 表示什么？** 当前 C# 源码没有实现体，成员由 .NET Runtime 内部提供实现；它不是日常业务代码的常规写法。
+
+关联：[C# 线程、线程池、WinForms UI 封送与协作式取消](../01-CSharp/Threading-and-Cancellation.md)。本批为文字学习和代码阅读，尚未记录独立运行验证。
