@@ -1,5 +1,7 @@
 # 工业机器视觉上位机学习知识库
 
+最新增量：[2026-11-06 C# 抽象、多态与参数传递](07-Study-Plan/2026-11-06-CSharp-Abstract-Ref-Coverage.md)（扩展 abstract/virtual/override/new/sealed，新增 ref/out/in 专题、13 张 Anki 卡和 P0 面试复习；状态待学习/待验证）。
+
 最新增量：[2026-11-05 跨语言编程抽象与软件设计](08-Programming-Fundamentals/Abstraction-and-Software-Design.md)（从语言特性、设计模式、编译器与运行时、框架/SDK 到工业视觉系统，建立跨语言的抽象视角；状态待学习/待验证）。
 
 最新增量：[2026-11-05 C# 委托与事件](07-Study-Plan/2026-11-05-CSharp-Delegate-Event-Coverage.md)（新增 Delegate/Event 专题、原始学习记录、13 张 Anki 卡和 P0 面试复习；状态待学习/待验证）。
