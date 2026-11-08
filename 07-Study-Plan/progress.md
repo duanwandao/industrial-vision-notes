@@ -1,5 +1,8 @@
 # 学习进度
 
+2026-11-08（求职方向再次校准与编码器反馈）：用户明确纠正当前面试目标为 **C# 上位机开发工程师和工业机器视觉工程师**，PLC 是设备集成配套能力，不是主要求职方向。新增[编码器反馈与位置测量](../02-PLC/Encoder-Feedback.md)，覆盖增量/绝对式、A/B/Z、PPR 与 x4、HSC、频率/输送带位移换算，以及编码器在工件跟踪、线扫相机同步触发中的用途；更新[工业机器视觉学习路线](../03-Machine-Vision/README.md)、面试复习和 Anki Q244–Q253。**状态待学习 / 待验证**：本轮完成文字讲解与纸面计算，尚未进行实机接线、S7-200 SMART HSC 配置、频率测量、输送带标定或相机编码器触发实验。后续主线回到 C#/.NET、WinForms、工业相机 SDK、图像采集、成像和视觉算法；PLC/运动控制/电气硬件按 P1 配套深度学习。
+
+
 2026-11-06（C# 线程、线程池、WinForms UI 封送与协作式取消）：新增 [线程与取消专题](../01-CSharp/Threading-and-Cancellation.md)，系统整理 UI 消息循环、InvokeRequired/Invoke/BeginInvoke、Action/Lambda、Thread/Task/ThreadPool、async/await 上下文、Task.Delay/Thread.Sleep、竞态条件、Interlocked、lock、volatile、CancellationTokenSource/Token 与 CTS 生命周期；补充 lambda local、闭包、C# 12 集合表达式和 extern/InternalCall 源码阅读提示。Anki 新增 Q224–Q243（20 张），P0 面试复习同步补充。**状态保持待学习 / 待验证**：本轮完成文字讲解与概念问答，尚未记录用户独立编译运行 ThreadSafetyDemo、CancellationDemo 或 WinFormsThreadDemo，也未连接真实相机 SDK。下一步先完成 counter++ 与 Interlocked 对照实验，再完成可取消循环和 WinForms 开始/停止/关闭收尾练习。
 
 
