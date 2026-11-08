@@ -1,5 +1,7 @@
 # 工业机器视觉上位机学习知识库
 
+最新增量：[2026-11-08 求职方向校准与编码器反馈专题](07-Study-Plan/2026-11-08-Encoder-Feedback-and-Role-Calibration.md)（再次明确目标为 C# 上位机开发与工业机器视觉；PLC 定位为设备集成配套能力；新增编码器反馈、视觉触发专题、P1 面试题和 Anki Q244–Q253）。
+
 最新增量：[2026-11-06 C# 线程、线程池、WinForms UI 封送与协作式取消](07-Study-Plan/2026-11-06-CSharp-Threading-Cancellation-Coverage.md)（新增线程与 Task、消息循环、BeginInvoke/Invoke、线程池、竞态条件、Interlocked/lock/volatile、CancellationToken 专题；新增 20 张 Anki 卡和 P0 面试复习；状态待学习/待验证）。
 
 最新增量：[2026-11-06 C# 抽象、多态与参数传递](07-Study-Plan/2026-11-06-CSharp-Abstract-Ref-Coverage.md)（扩展 abstract/virtual/override/new/sealed，新增 ref/out/in 专题、13 张 Anki 卡和 P0 面试复习；状态待学习/待验证）。
