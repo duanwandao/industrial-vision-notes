@@ -258,3 +258,22 @@
 12. **P0：视觉检测设备断电恢复为什么需要 Checkpoint？** 要把工件 ID、图像持久化、算法结果、PLC 是否消费结果和下料进度关联起来，避免重复拍照、重复下料或把旧结果配给新工件。
 
 本批为文字讲解和纸面推演；未进行真实 PLC 断电、回零、通信重连或视觉生产线恢复测试。关联：[PLC 断电恢复与设备状态机](../02-PLC/Power-Loss-Recovery-and-State-Machine.md)、[PLC 通信](../02-PLC/Communication.md)。
+
+
+## 2026-11-09 WinForms 布局、模态对话框与数据绑定（Q266–Q280）
+
+1. **P0：TableLayoutPanel 与 FlowLayoutPanel 如何分工？** 前者按行列网格划分区域；后者按流向排列控件，适合工具栏和按钮组。
+2. **P0：Absolute、Percent、AutoSize 的区别？** 固定像素、按可分配剩余空间比例分配、按内容需求调整；Percent 不应简单理解为整个窗体的百分比。
+3. **P0：DataGridView 的 DataPropertyName 是什么？** 指定该列绑定对象的哪个公开属性；HeaderText 只是用户看到的列标题。
+4. **P0：DataGridView 非绑定模式与数据绑定模式有何区别？** 非绑定模式通过 Rows.Add 等直接操作控件；绑定模式通过 DataSource 展示模型集合，业务数据与 UI 分离。
+5. **P0：DialogResult.OK 与 ShowDialog 返回值是什么关系？** 模态窗体设置 DialogResult 属性为 OK 后结束对话框，调用方 ShowDialog 返回 OK；调用方据此判断是否接收数据。
+6. **P0：ShowDialog(this) 的 this 表示什么？** 当前窗体作为 Owner，建立窗口所有权关系；不是把 Form1 业务数据传给 Form2。
+7. **P0：using var dialog 的释放时机？** using 声明所在作用域结束时调用 Dispose，包含提前 return/异常路径；释放 Form2 不会自动释放从中取出的 Light 业务对象。
+8. **P0：is not Light light 是否 new 了对象？** 没有；模式匹配检查类型并声明局部引用变量，变量指向已有 Light 实例。
+9. **P1：BeginUpdate/EndUpdate 是否等同于 BeginInvoke？** 不等同；前者控制控件重绘，后者把委托投递到 UI 线程执行。
+10. **P0：BindingList<T> 与 INotifyPropertyChanged 的职责？** 前者通知集合增删/重置，后者通知集合中对象的属性变化。
+11. **P0：修改 Name/IsOn 后，计算属性 DisplayText 为什么也要通知？** DisplayText 依赖这些属性；依赖值变化时必须发出 DisplayText 的 PropertyChanged 通知，绑定显示才能刷新。
+12. **P0：ListBox 已绑定 DataSource 后如何增删数据？** 修改数据源集合的 Add/Remove/Clear；不要再直接用 Items.Add/Clear 管理绑定数据。
+13. **P0：绑定集合从相机后台回调线程更新是否安全？** 不应直接更新 WinForms 绑定集合/控件；先调度到 UI 线程，并遵循相机 SDK 的缓冲区生命周期。
+
+本批为文字讲解和设计器布局练习；仅确认用户已提供主窗体布局截图，未确认模态数据回传、绑定刷新、线程调度或真实硬件行为已运行验证。关联：[WinForms 布局与数据绑定](../01-CSharp/WinForms-Layout-and-Data-Binding.md)。
