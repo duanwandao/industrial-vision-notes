@@ -1,5 +1,7 @@
 # 学习进度
 
+2026-11-09（WinForms 布局、模态窗体与数据绑定）：新增 [WinForms 布局与数据绑定专题](../01-CSharp/WinForms-Layout-and-Data-Binding.md)，覆盖 TableLayoutPanel/FlowLayoutPanel/Panel、DataGridView 非绑定与对象绑定、DataPropertyName、DialogResult、ShowDialog Owner、using var/Dispose、类型模式匹配、ListBox BeginUpdate/EndUpdate、BindingList<T> 集合通知和 INotifyPropertyChanged 属性通知；新增课堂原始记录、覆盖报告、P0 面试复习和 Anki Q266–Q280（15 张）。用户已提供设备管理主窗体布局截图，界面已初步完成；Form2 数据返回、集合自动刷新和属性变化通知尚无代码运行证据。**状态待学习 / 待验证**：下一步完成 Form2 返回 Light、BindingList 绑定 ListBox、修改 IsOn/Name 验证 DisplayText 更新，并完成编辑/删除/清空。未连接真实 PLC 或灯控硬件。
+
 2026-11-08（PLC 命令可靠性、状态机与断电恢复）：新增[PLC 断电恢复与设备状态机](../02-PLC/Power-Loss-Recovery-and-State-Machine.md)，扩展[PLC 通信](../02-PLC/Communication.md)中的 CommandId、AcceptedCommandId、CompletedCommandId、旧 Done 防误判、幂等去重和重连状态核对；在[运动控制](../02-PLC/Motion-Control.md)补充开环步进断电后指令位置不等于机械实际位置、回零前检查。新增课堂原始记录、覆盖报告、P0/P1 面试复习和 Anki Q254–Q265（12 张）。用户在纸面题中正确判断：通信恢复先重读 PLC 状态；Done 需与 CommandId 匹配；无编码器开环步进断电后不能仅凭保持位置继续运动；先建立坐标参考，原命令标记 Interrupted。**状态待学习 / 待验证**：本轮为文字讲解和纸面推演，尚未完成模拟 PLC 去重、C# 状态机实现、通信重连、实机回零或视觉生产流程恢复。后续重点解释原命令为何不能盲目重放，并在 Windows 本上实现状态转换校验和命令去重模拟。
 
 2026-11-08（求职方向再次校准与编码器反馈）：用户明确纠正当前面试目标为 **C# 上位机开发工程师和工业机器视觉工程师**，PLC 是设备集成配套能力，不是主要求职方向。新增[编码器反馈与位置测量](../02-PLC/Encoder-Feedback.md)，覆盖增量/绝对式、A/B/Z、PPR 与 x4、HSC、频率/输送带位移换算，以及编码器在工件跟踪、线扫相机同步触发中的用途；更新[工业机器视觉学习路线](../03-Machine-Vision/README.md)、面试复习和 Anki Q244–Q253。**状态待学习 / 待验证**：本轮完成文字讲解与纸面计算，尚未进行实机接线、S7-200 SMART HSC 配置、频率测量、输送带标定或相机编码器触发实验。后续主线回到 C#/.NET、WinForms、工业相机 SDK、图像采集、成像和视觉算法；PLC/运动控制/电气硬件按 P1 配套深度学习。
