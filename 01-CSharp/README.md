@@ -4,7 +4,7 @@
 
 ## 专题
 
-- [WinForms 布局、对话框与数据绑定](WinForms-Layout-and-Data-Binding.md)：TableLayoutPanel、FlowLayoutPanel、DataGridView、模态对话框、DialogResult、using/Dispose、模式匹配、BeginUpdate/EndUpdate、BindingList<T> 与 INotifyPropertyChanged。
+- [WinForms 布局、对话框与数据绑定](WinForms-Layout-and-Data-Binding.md)：TableLayoutPanel、FlowLayoutPanel、DataGridView 与 ListBox、模态对话框、DialogResult、using/Dispose、is/not/or 模式、BindingList<T>、INotifyPropertyChanged、BindingSource、ListChanged 源码、Filter/Sort 能力边界、DisplayMember/DisplayText 和对话框验证交互。
 
 - [C# 委托与事件](Delegates-and-Events.md)：Delegate、Action/Func/Predicate、多播委托、Callback、event、EventHandler<TEventArgs>、WinForms 与相机事件、线程与退订生命周期。
 
