@@ -48,6 +48,13 @@
 - [相机曝光与 LED 光源频闪同步](Exposure-and-Light-Source-Strobe-Synchronization.md)：理解 Exposure Time 与 Frame Period、Strobe Width/Delay、Exposure Active、硬件触发链路、PWM/频闪、运动模糊和 Global/Rolling Shutter。
 - 当前先掌握原理与时序图；真实接线和参数必须以相机/光源控制器具体型号手册为准。C# 负责配置与流程管理，微秒级同步交给硬件。
 
+
+### 光源控制器与 PLC 触发接口（2026-11-10）
+
+- [CCD500 LED 光源控制器、PLC 触发与 HIGH/LOW](LED-Light-Controller-and-Trigger-Polarity.md)：区分 CH 光源输出、TR 外部触发、常亮/外部触发、电平/边沿触发和 Active High/Low；记录 Q1.2 现场现象与 ST/SR 输出类型。
+- 当前 CCD500 厂家、完整型号、HIGH/LOW 定义及 I/O 规格尚未核实；LOW 后灯亮只记录为观察事实，不推断设备内部逻辑。
+- 配套通信知识见 [PLC 通信](../02-PLC/Communication.md)：COM 端口、RS-232/RS-485 与 Modbus RTU。不能假设 CCD500 支持 Modbus，需先查原厂手册。
+
 ### P1：现场工作需要的基础
 
 - PLC I/O、24V DC、PNP/NPN、继电器/接触器：能看懂常见触发输入、输出和反馈回路。

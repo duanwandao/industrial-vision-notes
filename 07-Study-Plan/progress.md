@@ -1,5 +1,7 @@
 # 学习进度
 
+2026-11-10（CCD500 光源触发、S7-200 SMART 输出类型与 Modbus RTU）：新增 [CCD500 光源控制器与 PLC 触发专题](../03-Machine-Vision/LED-Light-Controller-and-Trigger-Polarity.md)，扩展 [PLC 基础](../02-PLC/PLC-Basics.md) 的 ST/SR、Q1.2 输出指示灯与实际电气状态区别，并扩展 [PLC 通信](../02-PLC/Communication.md) 的 COM3/COM4、RS-232/RS-485、Modbus RTU 帧、功能码、CRC、寄存器地址和 C# SerialPort 分工。新增 Inbox 原始记录、覆盖报告、面试题和 Anki Q313–Q327（15 张）。**状态待学习 / 待验证**：用户报告 TR1 线缆标记 Q1.2、Q1.2 指示灯未亮，老师切到 LOW 后 LED 点亮；这只记录为现象，不推断 LOW 一定为低电平有效。S7-200 SMART 完整 ST/SR 型号、输出 COM、CCD500 厂家/手册、TR1 电气规格和 CH/TR 映射仍未知；未带电测量、改 PLC 程序或进行 Modbus 实机通信。下一步先确认铭牌/手册和接线，再做受控信号验证；Modbus RTU 先用离线模拟器练习。
+ 
 2026-11-10（BindingSource、BindingList 源码与灯光管理交互）：扩展 [WinForms 布局与数据绑定专题](../01-CSharp/WinForms-Layout-and-Data-Binding.md)，补充 BindingSource Current/Position/导航、Filter/Sort 底层接口条件、.NET 8 BindingList 的 ListChanged 与 HookPropertyChanged 源码、is/not/or 模式、event 与委托边界、string.Empty/null/null!、ToString/DisplayMember/DisplayText、构造初始化时机，以及对话框内重复 PLC 地址验证和编辑取消语义。新增 Inbox 原始记录、覆盖报告、P0 口述题和 C# Anki Q296–Q312（17 张）。**状态待学习 / 待验证**：用户截图确认当前界面使用 ListBox，Designer 已创建 lightBindingSource，但尚无证据表明 BindingSource 已接线运行；重复地址检查目前位于 ShowDialog 返回后，需迁移到对话框确认前。未连接真实 PLC。
 
 2026-11-10（相机曝光与 LED 光源频闪同步）：新增[相机曝光与 LED 光源频闪同步专题](../03-Machine-Vision/Exposure-and-Light-Source-Strobe-Synchronization.md)，覆盖 Exposure Time/Frame Period、Strobe Width/Trigger Delay、Exposure Active、电平/边沿触发、相机/PLC/光源硬件同步架构、PWM 与频闪、运动模糊、Global/Rolling Shutter、C# 职责边界、示波器与光电二极管诊断。新增 Inbox 原始记录、P0 面试口述题和 MachineVision Anki Q281–Q295（15 张）。**状态待学习 / 待验证**：本轮仅文字讲解和纸面计算；相机与光源控制器型号未知，未查具体手册、接线、测波形或实机采集。下一步先确认实训设备型号和 I/O 规格，再做 C# 参数模拟与硬件时序图；不使用 Task.Delay 承担微秒级同步。
@@ -72,8 +74,8 @@
 | 视觉算法基础 | 检测、定位、测量和缺陷判断是岗位核心产出 | P0 | 从灰度/阈值/滤波/形态学/轮廓开始，再练模板匹配与标定 |
 | PLC—上位机握手和故障恢复 | 避免漏请求、重复检测、结果错配和断线后状态混乱 | P0 | 先在模拟状态机中验证 RequestId、Ack、Done、超时和重连 |
 | 工业软件部署、日志和追溯 | 设备现场需要可诊断、可恢复、可追溯 | P0 | 为模拟检测流程增加日志、参数配置、图像/结果保存和异常记录 |
-| RS-485 / Modbus RTU 基础配置 | 现场可能遇到仪表、灯控器、变频器等串口设备 | P1 | 读设备手册，核对 A/B、波特率、校验、站号、终端和寄存器 |
-| 24V 控制回路与 PLC I/O | 需要看懂触发输入、输出类型、公共端及设备反馈 | P1 | 按真实型号画纸面图；区分逻辑位、物理输出和反馈，不自行带电测量 |
+| RS-485 / Modbus RTU 基础配置 | 现场可能遇到仪表、变频器和支持串口协议的设备 | P1 | 能识别 COM 端口，区分 RS-232/RS-485 与 RTU；配置站号、串口参数、功能码、寄存器和 CRC；先确认设备确实支持该协议 |
+| 24V 控制回路与 PLC I/O | 需要看懂触发输入、ST/SR 输出类型、公共端及设备反馈 | P1 | 按真实型号画纸面图；区分 Q 位、输出指示灯、端子电位和外部设备输入，不自行带电测量 |
 | 步进/伺服与设备安全边界 | 需要理解运动设备的状态、报警、限位和安全职责 | P1 | 以接口和状态诊断为主；具体参数先核对型号手册 |
 | UART 底层、电路设计与信号完整性 | 对当前上位机视觉岗位不是普遍前置要求 | P2 | 暂缓；只有岗位明确要求嵌入式/硬件开发时再深入 |
 
