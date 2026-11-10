@@ -295,3 +295,26 @@
 12. **P1：为什么短频闪不能无限缩短？** 光能可能不足、信噪比下降；还必须遵守 LED/控制器峰值电流、脉宽、重复频率和占空比额定值。
 
 关联：[相机曝光与 LED 光源频闪同步](../03-Machine-Vision/Exposure-and-Light-Source-Strobe-Synchronization.md)。以上为理论口述复习，不代表已经完成实机调试。
+
+
+## 2026-11-10 WinForms BindingSource、事件与交互设计（Q296–Q312）
+
+1. **P0：BindingSource 与 BindingList<T> 分别负责什么？** BindingList 管理底层集合并发出集合/条目变化通知；BindingSource 是 WinForms 绑定中间层，管理 Current、Position、导航并向控件提供统一数据源。
+2. **P0：BindingSource.Current 与 Position 分别是什么？** Current 是当前数据项；Position 是当前项在列表中的索引，通常从 0 开始。
+3. **P0：BindingSource.Filter 能否用于普通 BindingList<T>？** 不能默认使用；Filter 需要底层支持 IBindingListView 的过滤能力，普通 BindingList<T> 没有内建实现。
+4. **P0：BindingSource.Sort 能否用于普通 BindingList<T>？** 不能默认使用；普通 BindingList<T> 的 SupportsSortingCore 默认 false，ApplySortCore 默认不支持。应检查 SupportsSorting。
+5. **P0：BindingList<T> 在哪里订阅条目属性变化？** HookPropertyChanged 检查条目是否实现 INotifyPropertyChanged，并订阅其 PropertyChanged；移除/替换/清空时解除订阅。
+6. **P0：BindingList 的 ListChanged 事件 add/remove 访问器做什么？** add 将传入处理委托加入内部调用列表；remove 将其移除；OnListChanged 在集合内部触发所有订阅者。
+7. **P0：event 与公开委托字段的区别？** event 允许外部订阅/退订，但限制外部直接 Invoke 或覆盖调用列表；发布者控制触发时机。
+8. **P0：C# 的 or 与 || 有什么区别？** or 是模式匹配组合符，如 status is A or B；|| 是普通 bool 短路逻辑或，不能写成 if (a or b)。
+9. **P1：is not Light light 会创建 Light 对象吗？** 不会；类型模式检查已有引用，匹配成功时声明变量 light 指向同一个对象。
+10. **P0：string.Empty 与 null 有什么区别？** string.Empty 是长度为 0 的非 null 字符串；null 表示没有字符串引用。
+11. **P0：null! 会在运行时创建空字符串吗？** 不会；! 只抑制可空性警告，运行时值仍是 null。
+12. **P0：ListBox 的 DisplayMember 与 ToString 有什么关系？** DisplayMember 指定一个公开属性；指定后读取该属性而不是依赖 ToString。需要显示多个字段时提供 DisplayText 计算属性。
+13. **P0：修改 Name 后为何还要通知 DisplayText？** DisplayText 是依赖 Name 的计算属性；Name 改变后必须发出 DisplayText 的 PropertyChanged 才能刷新绑定显示。
+14. **P0：PLC 地址重复时为什么要在 Form2 关闭前校验？** 如果希望失败后保留用户输入，必须在设置 DialogResult.OK 前校验；失败时显示错误并 return，不关闭对话框。
+15. **P0：编辑 Light 时如何避免把原对象地址判为重复？** 用 ReferenceEquals 排除正在编辑的对象；或按稳定 ID 排除当前记录。
+16. **P0：编辑对话框为什么先修改草稿，确认后再提交？** 避免用户取消时原对象已经被修改；确认后再将允许修改的字段复制到原对象，可保留对象身份和绑定关系。
+17. **P1：字段初始化器与 WinForms 构造函数配置如何分工？** 不依赖控件的集合可在字段声明时初始化；设计器控件在 InitializeComponent 中创建，因此 DataSource 等控件配置放在其调用之后。
+
+关联：[WinForms 布局与数据绑定专题](../01-CSharp/WinForms-Layout-and-Data-Binding.md)。本批为源码阅读与文字练习，尚未证明用户项目已完成绑定、校验和编辑功能的独立运行验证。
