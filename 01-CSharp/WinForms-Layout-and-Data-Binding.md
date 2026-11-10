@@ -380,6 +380,274 @@ Form1：
 | INotifyPropertyChanged | 对象属性变化通知 |
 | DisplayMember | 指定列表控件显示对象的哪个属性 |
 
+
+## 10. BindingSource：WinForms 数据绑定中间层
+
+`BindingSource` 位于底层数据源与 WinForms 控件之间，提供统一绑定入口、当前项、当前位置和导航；它不是另一份业务集合，也不替代 `BindingList<T>`。
+
+用户的 Designer 截图已经有 `lightBindingSource = new BindingSource(components);`，所以直接使用这个设计器组件，不要再 new 一个重复实例。控件/组件在 `InitializeComponent()` 中创建，配置放在它之后：
+
+```csharp
+private readonly BindingList<Light> _lights = new();
+
+public Form1()
+{
+    InitializeComponent();
+
+    lightBindingSource.DataSource = _lights;
+    lstLights.DisplayMember = nameof(Light.DisplayText);
+    lstLights.DataSource = lightBindingSource;
+}
+```
+
+常用成员：`DataSource`（底层源）、`Current`（当前对象）、`Position`（当前索引，通常从 0 开始）、`Count`、`IndexOf(item)`、`MoveFirst/MovePrevious/MoveNext/MoveLast`、`RemoveCurrent()`、`CurrentChanged`。
+
+`Current` 可能为 null，使用前做模式匹配：
+
+```csharp
+if (lightBindingSource.Current is not Light selected)
+{
+    return;
+}
+```
+
+添加后选中新对象：
+
+```csharp
+_lights.Add(light);
+int index = lightBindingSource.IndexOf(light);
+if (index >= 0)
+    lightBindingSource.Position = index;
+```
+
+删除仍可操作唯一数据源：
+
+```csharp
+if (lightBindingSource.Current is Light selected)
+    _lights.Remove(selected);
+```
+
+### BindingSource.Filter / Sort 的能力边界
+
+BindingSource 提供 `Filter` / `Sort`，但取决于底层数据源是否真正支持：
+
+- Filter 要求底层实现 `IBindingListView` 并支持过滤（`SupportsFiltering`）。
+- Sort 要求底层 `IBindingList` / `IBindingListView` 实际支持排序（检查 `SupportsSorting`）。
+- 普通 `BindingList<T>` 虽实现 `IBindingList`，但默认 `SupportsSortingCore == false`，`ApplySortCore` 默认抛 `NotSupportedException`；它也没有内建 `IBindingListView` 过滤实现。因此不能假设 BindingSource 的 Filter/Sort 对普通 BindingList 可用。
+- `DataView` 支持过滤和排序；以 DataTable/DataView 为底层时可以使用对应视图能力。
+
+```csharp
+bool canFilter = lightBindingSource.SupportsFiltering;
+bool canSort = lightBindingSource.SupportsSorting;
+```
+
+对当前 `BindingList<Light>` 项目，先用 LINQ 做查询。`Where/OrderBy/ToList` 结果是新 List 快照，不会自动跟源 BindingList 后续增删同步；若要持续绑定过滤结果，应维护独立的可观察显示集合并在源数据变化时重新应用筛选，或实现明确支持排序/过滤的绑定列表。
+
+## 11. BindingList<T> 的 ListChanged 与属性事件源码
+
+.NET 8 Runtime 的 `BindingList<T>` 使用私有委托字段保存订阅者，并通过事件访问器管理：
+
+```csharp
+[NonSerialized]
+private ListChangedEventHandler? _onListChanged;
+
+public event ListChangedEventHandler ListChanged
+{
+    add => _onListChanged += value;
+    remove => _onListChanged -= value;
+}
+
+protected virtual void OnListChanged(ListChangedEventArgs e)
+{
+    _onListChanged?.Invoke(this, e);
+}
+```
+
+外部执行 `list.ListChanged += Handler` 会进入 `add`；执行 `-=` 会进入 `remove`。`value` 是本次传入的事件处理委托。只有 BindingList 内部的触发路径调用 `OnListChanged`。
+
+BindingList 重写集合操作发出通知：`InsertItem` 加入后发出 `ItemAdded`；`RemoveItem` 删除前解除条目属性事件订阅，再发出 `ItemDeleted`；`ClearItems` 清空前解除所有订阅，再发出 `Reset`；`SetItem` 替换时解除旧对象、订阅新对象，并发出 `ItemChanged`。`RaiseListChangedEvents` 可暂时抑制通知，但不是线程锁。
+
+### BindingList 在哪里监听 INotifyPropertyChanged？
+
+.NET 8 源码中的核心方法：
+
+```csharp
+private void HookPropertyChanged(T item)
+{
+    if (item is INotifyPropertyChanged inpc)
+    {
+        _propertyChangedEventHandler ??=
+            new PropertyChangedEventHandler(Child_PropertyChanged);
+        inpc.PropertyChanged += _propertyChangedEventHandler;
+    }
+}
+
+private void UnhookPropertyChanged(T item)
+{
+    if (item is INotifyPropertyChanged inpc
+        && _propertyChangedEventHandler != null)
+    {
+        inpc.PropertyChanged -= _propertyChangedEventHandler;
+    }
+}
+```
+
+BindingList 不是轮询 Light 属性，而是在对象加入时订阅 `PropertyChanged`；删除、替换、清空时解除订阅。`Child_PropertyChanged` 定位条目并向绑定层发出 `ItemChanged`（事件参数不完整时可能发出 Reset）。所以：BindingList 通知集合变化；INotifyPropertyChanged 通知对象属性变化；BindingList 将条目属性事件转换为 ListChanged。
+
+源码：[.NET 8 BindingList.cs](https://github.com/dotnet/runtime/blob/v8.0.0/src/libraries/System.ComponentModel.TypeConverter/src/System/ComponentModel/BindingList.cs)。
+
+## 12. C# is、not、or 与 ||
+
+`is` 可做类型检查，也可用类型模式声明变量：
+
+```csharp
+if (value is Light light)
+{
+    // light 指向 value 原来引用的对象；没有 new，也没有复制。
+}
+if (value is not Light light)
+{
+    return;
+}
+```
+
+`not` / `or` 是模式组合符：
+
+```csharp
+if (status is InspectionStatus.NG or InspectionStatus.Error)
+{
+}
+```
+
+`or` 只能在模式匹配语境中组合模式；`||` 是普通 bool 短路逻辑或：
+
+```csharp
+if (status == InspectionStatus.NG ||
+    status == InspectionStatus.Error)
+{
+}
+```
+
+Java 的 `instanceof` 与 C# 的 `is` 有相似用途；Java/JavaScript 的 `||` 对应普通逻辑或，但没有完全相同的 C# `not` / `or` 模式组合语法。
+
+C# 不是把 C++、Java、JavaScript 简单拼接，也不是把设计模式变成关键字。它采用 C 家族熟悉的语法，同时提供静态类型、面向对象、泛型、委托/事件、Lambda、LINQ、异步和模式匹配等能力。设计模式仍是软件设计思想，语言特性让部分模式更容易表达。
+
+## 13. event 与普通委托：发布者保留触发权
+
+`delegate` 是可调用对象类型；多播委托可保存多个处理器。`event` 在委托调用列表外增加访问限制：
+
+```csharp
+public class Camera
+{
+    public event EventHandler? ImageCaptured;
+
+    public void CaptureCompleted()
+    {
+        ImageCaptured?.Invoke(this, EventArgs.Empty);
+    }
+}
+```
+
+外部可 `+=` 订阅、`-=` 退订，但不能直接 `Invoke` 事件，也不能把事件赋值为 null 清空所有订阅者。只有声明事件的类型内部负责触发。
+
+概念上，事件的自定义访问器相当于管理私有委托字段：
+
+```csharp
+private EventHandler? _changed;
+
+public event EventHandler Changed
+{
+    add => _changed += value;
+    remove => _changed -= value;
+}
+
+protected virtual void OnChanged()
+{
+    _changed?.Invoke(this, EventArgs.Empty);
+}
+```
+
+`+=` / `-=` 是注册和取消注册，不是立即执行处理器。普通公开委托字段可能允许外部直接调用、覆盖或清空调用列表。普通事件处理器通常在触发事件的线程同步执行；event 不创建线程，也不自动切换到 WinForms UI 线程。
+
+## 14. string.Empty、String.Empty、null 与 null!
+
+`string` 是 C# 关键字别名，对应 `System.String`；`string.Empty` 与 `String.Empty` 都可用。
+
+- `""` 与 `string.Empty` 都是长度为 0 的非 null 字符串，语义等价，选择一种风格即可。
+- `null` 表示没有字符串引用，与空字符串不同。
+- `string?` 是可空引用类型注解，主要影响编译器静态分析，不会创建新的运行时字符串类型。
+- `null!` 只抑制可空性警告，运行时值仍然是 null；它不会创建空字符串。
+
+```csharp
+private string _name = string.Empty;
+private string? _optionalDescription = null;
+private Button btnAdd = null!; // Designer 在 InitializeComponent 中稍后创建
+```
+
+业务对象若能在构造时提供必需名称，优先通过构造参数建立有效对象，不要滥用 `null!`。`string.Empty` 也不代表输入已通过业务验证，仍需使用 `string.IsNullOrWhiteSpace` 等规则。
+
+## 15. ToString、DisplayMember 与 DisplayText
+
+`object.ToString()` 是虚方法。类不重写时通常得到类型名称；重写后可提供有意义的文本：
+
+```csharp
+public override string ToString() => Name + " - " + Address;
+```
+
+ListBox 未设置 `DisplayMember` 时通常使用对象 `ToString()`；设置 `DisplayMember` 后读取指定公开属性，不会因为重写 ToString 就自动拼接多个字段。
+
+推荐使用计算属性：
+
+```csharp
+public string DisplayText => Name + " - " + Address;
+public override string ToString() => DisplayText;
+```
+
+绑定：
+
+```csharp
+lstLights.DisplayMember = nameof(Light.DisplayText);
+lstLights.DataSource = lightBindingSource;
+```
+
+`DisplayMember` 一次指定一个属性；`DisplayText` 可以组合 Name 和 Address。DisplayText 依赖这两个属性，因此 Name 或 Address setter 修改成功后，还要触发 `OnPropertyChanged(nameof(DisplayText))`。ToString 更适合调试、日志和通用文本表示；DisplayText/DisplayMember 更适合 UI 展示契约。
+
+## 16. 字段初始化器与构造函数初始化
+
+不依赖控件的集合可以在字段声明时初始化：
+
+```csharp
+private readonly BindingList<Light> _lights = new();
+```
+
+字段初始化器在构造函数主体执行前完成。WinForms 设计器控件和组件通常在 `InitializeComponent()` 中创建，因此不要在字段初始化器中访问尚未创建的 `lstLights` 或 Designer 组件。应先执行 `InitializeComponent()`，再设置 DataSource / DisplayMember。如果 BindingSource 已由 Designer 通过 `new BindingSource(components)` 创建，就直接配置这个实例。
+
+## 17. 对话框验证与编辑交互：重复 PLC 地址时保留输入
+
+用户当前 `btnAdd_Click` 截图显示：先 `dialog.ShowDialog(this)`，对话框返回 OK 并关闭后，Form1 才用 LINQ `Any` 检查地址是否重复。这样发现重复时参数窗口已经关闭，用户必须重新打开并重填。
+
+若希望验证失败后保留输入，校验必须在 Form2 设置 `DialogResult.OK` 之前：
+
+1. Form2 读取并 Trim 名称、地址，检查必填、格式和重复。
+2. 失败时显示 ErrorProvider/就地错误，聚焦地址框并 SelectAll，然后 return；不要设置 DialogResult.OK。
+3. 成功后创建待提交 Light，最后设置窗体 `DialogResult = DialogResult.OK`。
+4. 确认按钮的 Button.DialogResult 设为 `None`，由点击处理器在验证成功后设置窗体结果；Form 的 `AcceptButton` 可指向它。取消按钮可设 Cancel 并作为 `CancelButton`。
+
+重复判断示例：
+
+```csharp
+bool duplicate = existingLights.Any(x =>
+    !ReferenceEquals(x, editingLight) &&
+    string.Equals(x.Address?.Trim(), address.Trim(),
+        StringComparison.OrdinalIgnoreCase));
+```
+
+`Any` 找到至少一个满足条件的元素就返回 true，并可提前结束。编辑时用 `ReferenceEquals` 排除正在编辑的对象，否则自己的原地址也会被判重复。若 Address 保证非 null，可移除 `?.`。
+
+编辑时先在对话框输入框中修改草稿，确认成功后返回新 Light；Form1 再将允许修改的字段复制到原对象，以保留对象身份和当前选择，并利用 INotifyPropertyChanged 更新绑定显示。取消时不修改原对象。不要在普通确认后额外询问是否关闭；只有用户修改过内容后又取消/点 X，才考虑询问是否放弃未保存修改。PLC 地址格式和软件集合唯一性检查不证明点位在目标 PLC 工程中真实存在。
+
+当前项目截图是 ListBox，不需要为了学习 BindingSource 先添加 DataGridView。
+
 ## 参考资料
 
 - [Microsoft Learn：DataGridView.DataSource](https://learn.microsoft.com/en-us/dotnet/api/system.windows.forms.datagridview.datasource)
