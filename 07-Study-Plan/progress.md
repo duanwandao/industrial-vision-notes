@@ -1,5 +1,7 @@
 # 学习进度
 
+2026-11-10（BindingSource、BindingList 源码与灯光管理交互）：扩展 [WinForms 布局与数据绑定专题](../01-CSharp/WinForms-Layout-and-Data-Binding.md)，补充 BindingSource Current/Position/导航、Filter/Sort 底层接口条件、.NET 8 BindingList 的 ListChanged 与 HookPropertyChanged 源码、is/not/or 模式、event 与委托边界、string.Empty/null/null!、ToString/DisplayMember/DisplayText、构造初始化时机，以及对话框内重复 PLC 地址验证和编辑取消语义。新增 Inbox 原始记录、覆盖报告、P0 口述题和 C# Anki Q296–Q312（17 张）。**状态待学习 / 待验证**：用户截图确认当前界面使用 ListBox，Designer 已创建 lightBindingSource，但尚无证据表明 BindingSource 已接线运行；重复地址检查目前位于 ShowDialog 返回后，需迁移到对话框确认前。未连接真实 PLC。
+
 2026-11-10（相机曝光与 LED 光源频闪同步）：新增[相机曝光与 LED 光源频闪同步专题](../03-Machine-Vision/Exposure-and-Light-Source-Strobe-Synchronization.md)，覆盖 Exposure Time/Frame Period、Strobe Width/Trigger Delay、Exposure Active、电平/边沿触发、相机/PLC/光源硬件同步架构、PWM 与频闪、运动模糊、Global/Rolling Shutter、C# 职责边界、示波器与光电二极管诊断。新增 Inbox 原始记录、P0 面试口述题和 MachineVision Anki Q281–Q295（15 张）。**状态待学习 / 待验证**：本轮仅文字讲解和纸面计算；相机与光源控制器型号未知，未查具体手册、接线、测波形或实机采集。下一步先确认实训设备型号和 I/O 规格，再做 C# 参数模拟与硬件时序图；不使用 Task.Delay 承担微秒级同步。
 
 2026-11-09（WinForms 布局、模态窗体与数据绑定）：新增 [WinForms 布局与数据绑定专题](../01-CSharp/WinForms-Layout-and-Data-Binding.md)，覆盖 TableLayoutPanel/FlowLayoutPanel/Panel、DataGridView 非绑定与对象绑定、DataPropertyName、DialogResult、ShowDialog Owner、using var/Dispose、类型模式匹配、ListBox BeginUpdate/EndUpdate、BindingList<T> 集合通知和 INotifyPropertyChanged 属性通知；新增课堂原始记录、覆盖报告、P0 面试复习和 Anki Q266–Q280（15 张）。用户已提供设备管理主窗体布局截图，界面已初步完成；Form2 数据返回、集合自动刷新和属性变化通知尚无代码运行证据。**状态待学习 / 待验证**：下一步完成 Form2 返回 Light、BindingList 绑定 ListBox、修改 IsOn/Name 验证 DisplayText 更新，并完成编辑/删除/清空。未连接真实 PLC 或灯控硬件。
