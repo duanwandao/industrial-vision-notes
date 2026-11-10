@@ -1,5 +1,7 @@
 # 工业机器视觉上位机学习知识库
 
+最新增量：[2026-11-10 相机曝光与 LED 光源频闪同步](07-Study-Plan/2026-11-10-Camera-Exposure-Light-Strobe-Synchronization-Coverage.md)（新增曝光窗口、频闪脉宽/延时、Exposure Active、硬件触发架构、PWM、运动模糊、Global/Rolling Shutter、C# 职责边界；MachineVision Anki Q281–Q295；状态待学习/待验证）。
+
 最新增量：[2026-11-09 WinForms 布局、模态窗体与数据绑定](07-Study-Plan/2026-11-09-WinForms-Layout-DataBinding-Coverage.md)（新增 TableLayoutPanel/FlowLayoutPanel、DataGridView、DialogResult/ShowDialog/Owner、using/Dispose、BeginUpdate/EndUpdate、BindingList<T>/INotifyPropertyChanged；15 张 C# Anki Q266–Q280；状态待学习/待验证）。
 
 最新增量：[2026-11-08 PLC 命令可靠性、状态机与断电恢复](07-Study-Plan/2026-11-08-PLC-Command-Recovery-Coverage.md)（补充 CommandId、幂等性、断线状态同步、开环步进位置可信性、受控回零与视觉流程 Checkpoint；新增断电恢复专题、12 张 Anki 卡和面试复习；状态待学习/待验证）。
