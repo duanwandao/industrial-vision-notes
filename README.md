@@ -1,5 +1,7 @@
 # 工业机器视觉上位机学习知识库
 
+最新增量：[2026-11-10 CCD500 光源触发、ST/SR 与 Modbus RTU](07-Study-Plan/2026-11-10-CCD500-Trigger-Modbus-RTU-Coverage.md)（新增 CCD500 光源触发专题，记录 TR1/Q1.2/LOW 现场现象及待核实项；补充 S7-200 SMART ST/SR、COM3/COM4、RS-232/RS-485、Modbus RTU 帧/CRC/功能码；Anki Q313–Q327；状态待学习/待验证）。
+
 最新增量：[2026-11-10 BindingSource、事件源码与灯光管理交互](07-Study-Plan/2026-11-10-BindingSource-Events-UX-Coverage.md)（补充 BindingSource Filter/Sort 条件、BindingList .NET 8 源码、is/not/or、event、null 语义、DisplayText 与对话框内重复地址验证；C# Anki Q296–Q312；状态待学习/待验证）。
 
 最新增量：[2026-11-10 相机曝光与 LED 光源频闪同步](07-Study-Plan/2026-11-10-Camera-Exposure-Light-Strobe-Synchronization-Coverage.md)（新增曝光窗口、频闪脉宽/延时、Exposure Active、硬件触发架构、PWM、运动模糊、Global/Rolling Shutter、C# 职责边界；MachineVision Anki Q281–Q295；状态待学习/待验证）。
