@@ -42,6 +42,7 @@
 | 视觉算法 | 灰度、阈值、滤波、形态学、轮廓/Blob、边缘、模板匹配、测量、标定 | 完成一个可解释、可重复的检测流程 |
 | PLC 集成 | 以太网/TCP 基础、项目实际 PLC 协议、地址表、数据类型、业务握手、超时和重连 | 模拟或实机受控完成“请求—拍照—结果—确认” |
 | 工业软件工程 | 参数配置、日志、异常码、图像与结果保存、部署和版本管理 | 在工控机环境可安装、运行和诊断 |
+| 设备适配与通信封装 | 把 UI、业务流程、设备协议、串口/SDK I/O 分层；统一处理超时、ACK、异常和资源生命周期 | 通过业务化 API 控制光源/相机周边设备，不在按钮事件中拼协议帧 |
 
 ### 成像与照明同步专题
 
@@ -54,6 +55,12 @@
 - [CCD500 LED 光源控制器、PLC 触发与 HIGH/LOW](LED-Light-Controller-and-Trigger-Polarity.md)：区分 CH 光源输出、TR 外部触发、常亮/外部触发、电平/边沿触发和 Active High/Low；记录 Q1.2 现场现象与 ST/SR 输出类型。
 - 当前 CCD500 厂家、完整型号、HIGH/LOW 定义及 I/O 规格尚未核实；LOW 后灯亮只记录为观察事实，不推断设备内部逻辑。
 - 配套通信知识见 [PLC 通信](../02-PLC/Communication.md)：COM 端口、RS-232/RS-485 与 Modbus RTU。不能假设 CCD500 支持 Modbus，需先查原厂手册。
+
+### 设备通信封装与驱动层次（2026-11-12）
+
+- [C# SerialPort 与 SemaphoreSlim](../01-CSharp/SerialPort-and-SemaphoreSlim.md)：学习 COM 端口生命周期、数据收发、事件接收、协议分帧和命令—响应互斥。
+- [跨语言抽象与软件设计](../08-Programming-Fundamentals/Abstraction-and-Software-Design.md)：区分 Windows 操作系统驱动、厂商 SDK、物理接口、通信协议和项目内应用层设备适配器。
+- JialiLedController 这类项目类是应用层设备适配器/通信封装，不是 Windows 内核驱动；SerialPort API 也不等于 RS-232/RS-485 或 Modbus 协议。
 
 ### P1：现场工作需要的基础
 

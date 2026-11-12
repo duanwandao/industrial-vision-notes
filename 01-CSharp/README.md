@@ -4,6 +4,9 @@
 
 ## 专题
 
+- [SerialPort 与 SemaphoreSlim：设备串口通信实战](SerialPort-and-SemaphoreSlim.md)：串口生命周期、Write/WriteLine、ReadLine/ReadExisting、DataReceived、协议分帧、缓冲区、ACK、异步命令互斥与超时恢复。
+- [C# 语法进阶与 unsafe 源码阅读](CSharp-Syntax-and-Unsafe-Memory.md)：表达式体、目标类型推断 new、对象初始化器、可选参数、record、switch/模式匹配、params、Trim、unsafe、指针与 fixed。
+
 - [WinForms 布局、对话框与数据绑定](WinForms-Layout-and-Data-Binding.md)：TableLayoutPanel、FlowLayoutPanel、DataGridView 与 ListBox、模态对话框、DialogResult、using/Dispose、is/not/or 模式、BindingList<T>、INotifyPropertyChanged、BindingSource、ListChanged 源码、Filter/Sort 能力边界、DisplayMember/DisplayText 和对话框验证交互。
 
 - [C# 委托与事件](Delegates-and-Events.md)：Delegate、Action/Func/Predicate、多播委托、Callback、event、EventHandler<TEventArgs>、WinForms 与相机事件、线程与退订生命周期。
@@ -11,7 +14,7 @@
 - [命名空间、访问控制、继承、抽象类与接口](OOP-Types-Access-Modifiers-and-Polymorphism.md)：namespace、using、Assembly、internal/protected、继承、abstract、virtual/override、interface 与组合。
 - [WinForms 窗体生命周期与可空类型](WinForms-Lifecycle-and-Nullability.md)：partial、构造方法、InitializeComponent、Dispose、IDisposable、Nullable<T>、null 运算符。
 - [异步编程与 UI 线程](Async-Events.md)：Task、async/await、取消、UI 线程与 TaskCompletionSource；委托/事件基础见上方专题。
-- [线程、线程池、WinForms UI 封送与协作式取消](Threading-and-Cancellation.md)：Thread/Task/ThreadPool、消息循环、Invoke/BeginInvoke、竞态条件、Interlocked/lock/volatile、CancellationToken。
+- [线程、线程池、WinForms UI 封送与协作式取消](Threading-and-Cancellation.md)：Thread/Task/ThreadPool、消息循环、Invoke/BeginInvoke、竞态条件、Interlocked/lock/volatile、SemaphoreSlim、CancellationToken。
 
 - [C# 参数传递：ref、out 与 in](Parameter-Passing-Ref-Out-In.md)：默认按值传递、引用类型参数、ref/out/in、Try 模式与参数选择。
 

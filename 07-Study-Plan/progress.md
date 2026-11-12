@@ -1,5 +1,7 @@
 # 学习进度
 
+2026-11-12（C# SerialPort、SemaphoreSlim 与语言/内存语法）：新增 [SerialPort 与 SemaphoreSlim 专题](../01-CSharp/SerialPort-and-SemaphoreSlim.md)，覆盖串口生命周期、Write/WriteLine、ReadLine/ReadExisting、DataReceived 分帧、缓冲区清理风险、异步命令—响应互斥、ACK 与设备状态确认边界；新增 [C# 语法与 unsafe 源码阅读专题](../01-CSharp/CSharp-Syntax-and-Unsafe-Memory.md)，覆盖表达式体、目标类型推断 new、对象初始化器、可选参数、三元运算符、sealed record、switch 表达式、关系模式、params、Trim、unsafe/char*/fixed；扩展跨语言抽象笔记中的关注点分离/课题分离、驱动/SDK/协议层次。新增 Inbox、覆盖报告、P0/P1 面试题和 C# Anki Q328–Q354（27 张）。**状态待学习 / 待验证**：本轮为文字讲解与源码阅读；未记录用户独立编译 unsafe 示例、虚拟串口收发、DataReceived 分片/迟到响应测试或真实光源控制器验证。下一步先完成虚拟串口文本帧分片练习，再做 SemaphoreSlim 并发与超时恢复模拟；unsafe 单独在小型 Console 项目验证，不在设备主项目随意开启。
+
 2026-11-10（CCD500 光源触发、S7-200 SMART 输出类型与 Modbus RTU）：新增 [CCD500 光源控制器与 PLC 触发专题](../03-Machine-Vision/LED-Light-Controller-and-Trigger-Polarity.md)，扩展 [PLC 基础](../02-PLC/PLC-Basics.md) 的 ST/SR、Q1.2 输出指示灯与实际电气状态区别，并扩展 [PLC 通信](../02-PLC/Communication.md) 的 COM3/COM4、RS-232/RS-485、Modbus RTU 帧、功能码、CRC、寄存器地址和 C# SerialPort 分工。新增 Inbox 原始记录、覆盖报告、面试题和 Anki Q313–Q327（15 张）。**状态待学习 / 待验证**：用户报告 TR1 线缆标记 Q1.2、Q1.2 指示灯未亮，老师切到 LOW 后 LED 点亮；这只记录为现象，不推断 LOW 一定为低电平有效。S7-200 SMART 完整 ST/SR 型号、输出 COM、CCD500 厂家/手册、TR1 电气规格和 CH/TR 映射仍未知；未带电测量、改 PLC 程序或进行 Modbus 实机通信。下一步先确认铭牌/手册和接线，再做受控信号验证；Modbus RTU 先用离线模拟器练习。
  
 2026-11-10（BindingSource、BindingList 源码与灯光管理交互）：扩展 [WinForms 布局与数据绑定专题](../01-CSharp/WinForms-Layout-and-Data-Binding.md)，补充 BindingSource Current/Position/导航、Filter/Sort 底层接口条件、.NET 8 BindingList 的 ListChanged 与 HookPropertyChanged 源码、is/not/or 模式、event 与委托边界、string.Empty/null/null!、ToString/DisplayMember/DisplayText、构造初始化时机，以及对话框内重复 PLC 地址验证和编辑取消语义。新增 Inbox 原始记录、覆盖报告、P0 口述题和 C# Anki Q296–Q312（17 张）。**状态待学习 / 待验证**：用户截图确认当前界面使用 ListBox，Designer 已创建 lightBindingSource，但尚无证据表明 BindingSource 已接线运行；重复地址检查目前位于 ShowDialog 返回后，需迁移到对话框确认前。未连接真实 PLC。
@@ -53,7 +55,8 @@
 |---|---|---|---|
 | C#/.NET 与 WinForms 工程开发 | 待学习 / 待验证 | P0 | 结合已有编程基础，完成可维护的设备上位机界面 |
 | C# 类型设计与参数传递 | 待学习 / 待验证 | P0 | abstract/virtual/override/new/sealed；ref/out/in；值类型与引用类型参数语义 |
-| 委托、事件、异步与 UI 线程 | 待学习 / 待验证 | P0 | Delegate/Event、消息循环、Invoke/BeginInvoke、ThreadPool、Task、async/await、竞态条件、Interlocked/lock/volatile、协作式取消 |
+| 委托、事件、异步与 UI 线程 | 待学习 / 待验证 | P0 | Delegate/Event、消息循环、Invoke/BeginInvoke、ThreadPool、Task、async/await、竞态条件、Interlocked/lock/volatile、SemaphoreSlim、协作式取消 |
+| C# 设备通信与串口事务 | 待学习 / 待验证 | P0 | SerialPort 生命周期、唯一读取入口、DataReceived/ReadExisting、协议分帧、ACK/超时、SemaphoreSlim 串行化；先虚拟串口后实机 |
 | 工业相机 SDK 与图像采集 | 待学习 | P0 | 枚举/连接、采集生命周期、软硬触发、回调、缓冲区；型号待确认 |
 | 成像基础：相机、镜头、光源、曝光 | 待学习 / 待验证 | P0 | 视野、工作距离、分辨率、景深；新增曝光窗口、频闪延时/脉宽、Exposure Active 与快门类型专题 |
 | 图像处理与视觉算法 | 待学习 | P0 | OpenCV/HALCON 基础，按课程与目标岗位选工具 |
@@ -68,7 +71,8 @@
 
 | 缺口 | 为什么重要 | 优先级 | 前置/小实验 |
 |---|---|---|---|
-| C# 异步、UI 线程与任务生命周期 | 采集和通信不能卡住界面；停止、关闭、断线时要能安全收尾 | P0 | 用 Task 模拟耗时采集/通信，练取消、异常和 UI 回切 |
+| C# 异步、UI 线程与任务生命周期 | 采集和通信不能卡住界面；停止、关闭、断线时要能安全收尾 | P0 | 用 Task 模拟耗时采集/通信，练取消、异常和 UI 回切；用 SemaphoreSlim 保护异步设备事务 |
+| SerialPort 事件接收与协议分帧 | 事件不等于完整帧；并发读取会造成响应丢失或错配 | P0 | 虚拟串口对拆分响应片段；统一读取入口、应用层缓存、超时和迟到响应恢复 |
 | 工业相机 SDK 采集流程 | 相机连接、触发、回调、图像缓冲区是视觉上位机的入口 | P0 | 先确认实训相机品牌/型号/接口，再按对应 SDK 示例枚举、连接、采图和停止 |
 | 成像基础与光源同步 | 图像质量受镜头、视野、工作距离、光源、曝光和触发时序影响，算法无法弥补所有成像问题 | P0 | 阅读[曝光与 LED 频闪同步](../03-Machine-Vision/Exposure-and-Light-Source-Strobe-Synchronization.md)，确认相机/光源型号后再核对手册和时序 |
 | 视觉算法基础 | 检测、定位、测量和缺陷判断是岗位核心产出 | P0 | 从灰度/阈值/滤波/形态学/轮廓开始，再练模板匹配与标定 |

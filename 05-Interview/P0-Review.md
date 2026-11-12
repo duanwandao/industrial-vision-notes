@@ -336,3 +336,21 @@
 12. **P1：C# SerialPort 是否等于 Modbus RTU？** 不是。SerialPort 负责 COM 端口和字节收发；Modbus 库负责站号、功能码、寄存器、CRC、超时和帧解析。
 
 关联：[CCD500 光源触发专题](../03-Machine-Vision/LED-Light-Controller-and-Trigger-Polarity.md)与[PLC 通信专题](../02-PLC/Communication.md)。以上为理论整理和现场口述记录，不代表完成真实接线或 Modbus 通信验证。
+
+
+## 2026-11-12 C# 串口通信、并发与设备抽象（P0/P1）
+
+1. **P0：SerialPort.Write() 没抛异常，能否认定设备操作成功？** 不能；它只说明本机写入调用完成。还要验证设备协议 ACK，必要时回读设备状态或检查物理反馈。
+2. **P0：DataReceived 一次触发是否代表收到一条完整消息？** 不代表；串口是字节流，事件可能只对应部分数据，也可能一次读到多条。必须按协议分帧。
+3. **P0：ReadExisting() 和 ReadLine() 有什么区别？** 前者读取当前可用文本并立即返回，不保证完整帧；后者等待 NewLine 结束符，超时会抛异常，适用于明确的行协议。
+4. **P0：为什么同一 SerialPort 不应同时用 DataReceived 和 ReadLine 读取？** 两条读取路径会竞争消费同一接收缓冲区，导致数据丢失或响应错配；应设计唯一读取入口。
+5. **P0：SemaphoreSlim(1,1) 如何保护命令—响应事务？** WaitAsync 获取许可，try/finally 包围发送和等待完整响应的整个事务，最后 Release；所有访问路径必须共用同一个信号量。
+6. **P0：SemaphoreSlim 能否解决超时后的迟到响应？** 不能；它只限制并发，不提供协议事务 ID 或帧关联。需要协议 ID、排空/重新同步策略或明确的设备恢复流程。
+7. **P1：DiscardInBuffer 和 DiscardOutBuffer 为什么不能每条命令前都调用？** 前者可能丢掉尚未读取的有效响应，后者可能丢掉尚未发送的数据；只能在明确恢复策略下使用。
+8. **P1：ACK、命令发送成功和设备实际动作成功有什么区别？** 本机写入完成、收到协议确认、物理状态达到目标是不同层次；ACK 语义由设备协议决定。
+9. **P1：JialiLedController 是不是 Windows 设备驱动？** 不是；它是应用层设备适配器/通信封装，底层仍使用 SerialPort API 和操作系统串口驱动。
+10. **P1：unsafe char* 和 fixed 分别解决什么问题？** 指针直接表示内存地址；fixed 在作用域内固定托管对象位置，避免 GC 移动；指针不携带数组长度。
+11. **P1：Trim('\r','\n','\0',' ') 会删除字符串中间的换行吗？** 不会；Trim 只删除两端属于指定字符集合的字符。
+12. **P1：关注点分离与课题分离是否同义？** 不是；前者是软件工程的职责拆分，后者常指阿德勒心理学的责任/任务边界，只能作有限类比。
+
+关联：[C# SerialPort 与 SemaphoreSlim](../01-CSharp/SerialPort-and-SemaphoreSlim.md)、[C# 语法与 unsafe 源码阅读](../01-CSharp/CSharp-Syntax-and-Unsafe-Memory.md)、[抽象与软件设计](../08-Programming-Fundamentals/Abstraction-and-Software-Design.md)。
