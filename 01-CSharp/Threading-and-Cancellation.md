@@ -330,6 +330,37 @@ volatile 修饰字段，给该字段的读写提供特定的可见性和内存�
 
 对任务取消，通常优先使用 CancellationToken；对计数器使用 Interlocked；对一组需要整体一致的状态使用 lock 或其他同步原语。
 
+
+### 7.5 SemaphoreSlim：控制并发许可，支持异步等待
+
+~~~csharp
+private readonly SemaphoreSlim _gate = new(1, 1);
+
+private async Task RunTransactionAsync(CancellationToken token)
+{
+    await _gate.WaitAsync(token);
+    try
+    {
+        // 临界区：例如一次完整的设备命令—响应事务
+        await DoAsyncWork();
+    }
+    finally
+    {
+        _gate.Release();
+    }
+}
+~~~
+
+- `new SemaphoreSlim(1, 1)`：初始许可数 1、最大许可数 1；同一时刻只允许一个任务持有许可。
+- `WaitAsync`：异步等待许可；等待时不会像同步 `Wait()` 那样阻塞当前线程。
+- `Release`：归还许可。成功获取后必须确保只释放一次，通常放在 `finally`。
+- 如果 `WaitAsync(token)` 在获取许可前被取消，它会抛出取消异常，后面的 try/finally 尚未进入，因此不应 Release。
+- `SemaphoreSlim(3, 3)` 最多允许三个任务同时进入；它不仅能做互斥，也能做并发限流。
+- `lock` 适合短小同步临界区，不能在 lock 块内 await；SemaphoreSlim 可跨 await 保护异步事务。
+- 信号量只约束使用同一个实例并遵守约定的代码路径；它不自动提供 FIFO 顺序、事务 ID、响应分帧或迟到响应恢复。
+
+串口示例与帧边界见 [SerialPort 与 SemaphoreSlim](SerialPort-and-SemaphoreSlim.md)。同一个串口应有唯一读取入口；SemaphoreSlim 保护命令—响应事务，但不能替代协议解析。
+
 ## 8. CancellationTokenSource、CancellationToken 与协作式取消
 
 ### 8.1 两个对象的职责
