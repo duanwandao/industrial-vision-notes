@@ -4,6 +4,9 @@
 
 ## 专题
 
+- [SerialPort 与 SemaphoreSlim：设备串口通信实战](SerialPort-and-SemaphoreSlim.md)：串口生命周期、Write/WriteLine、ReadLine/ReadExisting、DataReceived、协议分帧、缓冲区、ACK、异步命令互斥与超时恢复。
+- [C# 语法进阶与 unsafe 源码阅读](CSharp-Syntax-and-Unsafe-Memory.md)：表达式体、目标类型推断 new、对象初始化器、可选参数、record、switch/模式匹配、params、Trim、unsafe、指针与 fixed。
+
 - [WinForms 布局、对话框与数据绑定](WinForms-Layout-and-Data-Binding.md)：TableLayoutPanel、FlowLayoutPanel、DataGridView 与 ListBox、模态对话框、DialogResult、using/Dispose、is/not/or 模式、BindingList<T>、INotifyPropertyChanged、BindingSource、ListChanged 源码、Filter/Sort 能力边界、DisplayMember/DisplayText 和对话框验证交互。
 
 - [C# 委托与事件](Delegates-and-Events.md)：Delegate、Action/Func/Predicate、多播委托、Callback、event、EventHandler<TEventArgs>、WinForms 与相机事件、线程与退订生命周期。
