@@ -14,7 +14,7 @@
 - [命名空间、访问控制、继承、抽象类与接口](OOP-Types-Access-Modifiers-and-Polymorphism.md)：namespace、using、Assembly、internal/protected、继承、abstract、virtual/override、interface 与组合。
 - [WinForms 窗体生命周期与可空类型](WinForms-Lifecycle-and-Nullability.md)：partial、构造方法、InitializeComponent、Dispose、IDisposable、Nullable<T>、null 运算符。
 - [异步编程与 UI 线程](Async-Events.md)：Task、async/await、取消、UI 线程与 TaskCompletionSource；委托/事件基础见上方专题。
-- [线程、线程池、WinForms UI 封送与协作式取消](Threading-and-Cancellation.md)：Thread/Task/ThreadPool、消息循环、Invoke/BeginInvoke、竞态条件、Interlocked/lock/volatile、CancellationToken。
+- [线程、线程池、WinForms UI 封送与协作式取消](Threading-and-Cancellation.md)：Thread/Task/ThreadPool、消息循环、Invoke/BeginInvoke、竞态条件、Interlocked/lock/volatile、SemaphoreSlim、CancellationToken。
 
 - [C# 参数传递：ref、out 与 in](Parameter-Passing-Ref-Out-In.md)：默认按值传递、引用类型参数、ref/out/in、Try 模式与参数选择。
 
