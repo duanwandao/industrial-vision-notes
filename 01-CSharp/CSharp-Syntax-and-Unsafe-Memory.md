@@ -150,7 +150,7 @@ if (channel < 1 || channel > ChannelCount)
 .NET 的一个 Trim 重载形如：
 
 ~~~csharp
-public string Trim(params char[]? trimChars);
+public unsafe string Trim(params char[]? trimChars);
 ~~~
 
 - char[]：字符数组。
