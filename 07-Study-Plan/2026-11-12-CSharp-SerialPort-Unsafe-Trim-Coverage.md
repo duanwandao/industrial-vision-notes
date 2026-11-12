@@ -41,7 +41,7 @@
 
 ## Anki 与面试复习
 
-新增 C# Anki Q328–Q352（25 张），涵盖表达式体/目标类型推断、record、模式匹配、Trim/unsafe/fixed、SerialPort 读写/事件、SemaphoreSlim 和 ACK 边界。新增 P0/P1 口述题，重点是设备通信可靠性与架构职责。
+新增 C# Anki Q328–Q354（27 张），涵盖表达式体/目标类型推断、record、模式匹配、Trim/unsafe/fixed、SerialPort 读写/事件、SemaphoreSlim 和 ACK 边界。新增 P0/P1 口述题，重点是设备通信可靠性与架构职责。
 
 ## 关键误区与边界
 
