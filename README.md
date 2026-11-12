@@ -1,6 +1,6 @@
 # 工业机器视觉上位机学习知识库
 
-最新增量：[2026-11-12 C# SerialPort、SemaphoreSlim 与语法/unsafe 源码阅读](07-Study-Plan/2026-11-12-CSharp-SerialPort-Unsafe-Trim-Coverage.md)（新增 SerialPort/异步串口事务专题、C# 语法与 unsafe 源码阅读专题；补充设备驱动与关注点分离边界；C# Anki Q328–Q352；状态待学习/待验证）。
+最新增量：[2026-11-12 C# SerialPort、SemaphoreSlim 与语法/unsafe 源码阅读](07-Study-Plan/2026-11-12-CSharp-SerialPort-Unsafe-Trim-Coverage.md)（新增 SerialPort/异步串口事务专题、C# 语法与 unsafe 源码阅读专题；补充设备驱动与关注点分离边界；C# Anki Q328–Q354；状态待学习/待验证）。
 
 最新增量：[2026-11-10 CCD500 光源触发、ST/SR 与 Modbus RTU](07-Study-Plan/2026-11-10-CCD500-Trigger-Modbus-RTU-Coverage.md)（新增 CCD500 光源触发专题，记录 TR1/Q1.2/LOW 现场现象及待核实项；补充 S7-200 SMART ST/SR、COM3/COM4、RS-232/RS-485、Modbus RTU 帧/CRC/功能码；Anki Q313–Q327；状态待学习/待验证）。
 
