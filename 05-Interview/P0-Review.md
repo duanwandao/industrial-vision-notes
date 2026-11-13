@@ -354,3 +354,13 @@
 12. **P1：关注点分离与课题分离是否同义？** 不是；前者是软件工程的职责拆分，后者常指阿德勒心理学的责任/任务边界，只能作有限类比。
 
 关联：[C# SerialPort 与 SemaphoreSlim](../01-CSharp/SerialPort-and-SemaphoreSlim.md)、[C# 语法与 unsafe 源码阅读](../01-CSharp/CSharp-Syntax-and-Unsafe-Memory.md)、[抽象与软件设计](../08-Programming-Fundamentals/Abstraction-and-Software-Design.md)。
+
+## 2026-11-13 C# record struct、值/引用语义（P0/P1）
+
+1. **P0：`record`、`record class` 和 `record struct` 是值类型还是引用类型？** 前两者是引用类型，后者是值类型；record class 虽然默认按成员值比较相等，但赋值仍复制引用。
+2. **P0：`record struct` 赋值后修改副本，原值会变吗？** 普通数值成员不会，因为结构体按值复制；但引用类型成员指向的对象仍可能被双方共享。
+3. **P1：`record struct` 相比普通 `struct` 自动生成了什么？** 位置声明可以生成主构造函数、属性、解构；record struct 还提供成员相等、`==` / `!=` 和友好的 `ToString` 等。
+4. **P0：工业相机管理器和检测坐标分别适合哪种类型？** 有设备身份、连接和释放生命周期的管理器优先 `class`；小型不可变坐标值可以使用 `readonly record struct`；具体仍取决于业务和性能。
+5. **P1：为什么 WinForms 的可编辑绑定项通常不选可变 `record struct`？** 值复制容易导致修改副本不回写集合；类对象更方便保留身份并配合 `INotifyPropertyChanged` 通知变更。
+
+关联：[C# 语法专题（record 扩充）](../01-CSharp/CSharp-Syntax-and-Unsafe-Memory.md)和[参数传递专题](../01-CSharp/Parameter-Passing-Ref-Out-In.md)。当前仅理论整理，示例待用户独立运行验证。
