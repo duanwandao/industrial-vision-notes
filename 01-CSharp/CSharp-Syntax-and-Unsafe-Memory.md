@@ -107,6 +107,96 @@ var changed = first with { Brightness = 100 };
 
 Acknowledged 应表达“收到符合设备协议的确认响应”，不能仅因为 SerialPort.Write 没有抛异常就设为 true；ACK 也不一定证明物理亮度已经达到目标值。
 
+
+### 3.1 四种自定义类型的区别
+
+| 声明 | 类型语义 | 复制/赋值 | 常见用途 |
+|---|---|---|---|
+| `class` | 引用类型，默认按对象身份比较相等 | 复制引用，同一个实例 | 相机、PLC、串口连接、WinForms 可编辑模型 |
+| `record class` 或 `record` | 引用类型，自动提供基于成员的相等性 | 复制引用，同一个实例 | 配置快照、数据传输对象 |
+| `struct` | 值类型，普通赋值复制结构体的值 | 复制值 | 需要自行控制 API/数据布局的小型值对象 |
+| `record struct` | 值类型，自动提供基于成员的相等性 | 复制值 | 坐标、尺寸、轻量检测结果 |
+
+注意：`record` 不加 `struct` 时是 `record class`（引用类型）；`record` 的“值相等”不等于“值类型”。普通 `struct` 继承自 `ValueType`，默认 `Equals` 也会按成员比较，但不会自动生成 `==` / `!=`；`record struct` 会生成这两个运算符以及友好的 `ToString` 等成员。
+
+### 3.2 最简位置 `record struct` 与复制
+
+~~~csharp
+public record struct Point(double X, double Y);
+
+var p1 = new Point(10, 20);
+var p2 = p1;       // 值复制，而不是引用同一个 Point
+p2.X = 100;        // 位置 record struct 的属性默认 get/set
+
+Console.WriteLine(p1.X);     // 10
+Console.WriteLine(p2.X);     // 100
+Console.WriteLine(p1);       // Point { X = 10, Y = 20 }
+
+var (x, y) = p1;             // 自动生成 Deconstruct
+bool same = p1 == new Point(10, 20); // true
+~~~
+
+位置 `record struct` 自动生成主构造函数、公共属性、解构、基于成员的相等性、`GetHashCode`、`ToString`。这只是生成常见成员的便利语法，不代表创建在栈上的对象；值类型数据具体放在哪里，取决于变量所处的位置（局部变量、类字段、数组元素、装箱等）及运行时实现。
+
+### 3.3 `readonly record struct` 与 `with`
+
+~~~csharp
+public readonly record struct InspectionPoint(double X, double Y);
+
+var a = new InspectionPoint(12.5, 8.0);
+// a.X = 20; // 编译错误：位置属性为 init-only
+var b = a with { X = 20 }; // 复制后指定新值
+~~~
+
+`readonly record struct` 限制实例状态修改，适合表达不希望改变的坐标或测量值。但 `readonly` 不会深度冻结成员中引用的其他对象。`with` 创建浅副本；普通 `struct` 在 C# 10 起也可以使用 `with`，这不是 record 专属能力。
+
+### 3.4 引用类型、匿名对象与浅复制陷阱
+
+~~~csharp
+public class Light
+{
+    public string Name { get; set; } = "";
+    public int Brightness { get; set; }
+}
+
+Light light1 = new() { Name = "环形光", Brightness = 80 };
+Light light2 = light1;       // 复制引用
+light2.Brightness = 100;     // light1.Brightness 同样为 100
+
+var anonymous = new { Name = "环形光", Brightness = 80 };
+// anonymous.Brightness = 100; // 错误：匿名类型属性只读
+~~~
+
+不要认为结构体复制总是“内部全部独立”。如果结构体中包含数组、List 或其他引用类型字段/属性，复制的是那个引用：
+
+~~~csharp
+public record struct ResultWithSamples(int[] Samples);
+
+var r1 = new ResultWithSamples(new[] { 1, 2 });
+var r2 = r1;
+r2.Samples[0] = 99;
+
+Console.WriteLine(r1.Samples[0]); // 99，数组仍被共享
+~~~
+
+`record struct` 自动生成的相等性也依赖成员自己的相等性：数组默认按引用身份比较，并不会自动逐元素比对。
+
+### 3.5 工业视觉 / WinForms 选型
+
+- 相机、光源控制器、串口连接、图像缓冲区所有权等具有身份与生命周期的对象优先使用 `class`；是否释放资源由 `IDisposable`、SDK 契约等决定，`record struct` 并不会自动管理资源。
+- `Point`、`Size`、`InspectionPoint` 这类较小、语义上像单个数值的结果适合 `readonly record struct`；大型结构体反复传递会产生复制成本，必要时实测并考虑 `in` 参数。
+- WinForms 的 `BindingList<Light>` + `INotifyPropertyChanged` 通常用可变 `class Light` 更合适。若把可编辑项改成值类型，读出元素常得到副本，修改副本不等于修改列表中的原始元素，也无法靠对象引用身份判断同一项。
+- `record class` 适合配置快照或需要基于成员相等的结果；位置 `record class` 属性默认 `init`，而位置 `record struct` 默认 `get/set`，不要混淆。
+- **值类型 / 引用类型** 与 **`ref` 参数** 是两回事：普通 `class` 参数也是“按值传递引用”；只有 `ref` 才让方法能够重新赋值调用者的变量。参见 [参数传递专题](Parameter-Passing-Ref-Out-In.md)。
+
+### 3.6 自测与实验（待验证）
+
+1. 在 .NET 8 Console 项目中写 `record struct Point` 与 `record class PointRef`，赋值后修改第二个变量的属性，预测第一个变量是否变化。
+2. 对比 `record struct` 的 `==`、`ToString()`、解构与普通 `struct`；尝试编译 `readonly record struct` 后再修改属性，记录编译错误。
+3. 用 `int[]` 成员验证 `with`/赋值是浅复制；解释为什么 `record struct` 并不能自动深拷贝图像数据。
+
+**本节状态：待学习 / 待验证。** 代码仅为教学示例，尚无用户独立编译运行或在 IndustrialVisionInspection 项目中使用此类型的证据。
+
 ## 4. switch 表达式与模式匹配
 
 ~~~csharp
