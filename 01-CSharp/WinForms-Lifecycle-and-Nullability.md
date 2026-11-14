@@ -185,6 +185,7 @@ using var stream = File.OpenRead(path);
 - 对 `ShowDialog()` 显示的模态窗体，关闭通常先隐藏窗体并返回对话结果；调用方应负责在不再使用时 Dispose，例如 `using var dialog = new SettingsForm();`。
 - 不要因为调用 `Close()` 就认为后台任务、相机采集或 PLC 通信已安全停止；设备 SDK 和任务需要按各自契约停止、等待、退订并释放。
 - 工业视觉软件关闭时，应先阻止新工作进入，再请求取消/停止采集，等待正在执行的工作结束，最后释放通信/相机对象。具体顺序以对应 SDK 文档为准。
+- 资源不只是托管内存：SerialPort、Bitmap、相机 SDK 对象可能管理 OS 句柄或原生资源；GC 与 Dispose 分工不同。资源所有权、using / await using、IAsyncDisposable 和 Cancel/await Task 的完整说明见 [C# 资源生命周期专题](Resource-Lifecycle-and-Async-Disposal.md)。
 - 窗体关闭不是安全回路；急停、硬件互锁、驱动器安全功能和危险能量隔离不能由 Close/Dispose 代替。
 
 ## 3. null 与可空类型
