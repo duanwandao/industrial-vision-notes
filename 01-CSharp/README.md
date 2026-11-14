@@ -4,6 +4,8 @@
 
 ## 专题
 
+- [C# 资源生命周期：IDisposable、using 与 IAsyncDisposable](Resource-Lifecycle-and-Async-Disposal.md)：托管内存与外部资源、资源所有权、Dispose/GC、using/using var、await using、Cancel/CancelAsync/await Task、WinForms 异步关闭。
+
 - [SerialPort 与 SemaphoreSlim：设备串口通信实战](SerialPort-and-SemaphoreSlim.md)：串口生命周期、Write/WriteLine、ReadLine/ReadExisting、DataReceived、协议分帧、缓冲区、ACK、异步命令互斥与超时恢复。
 - [C# 语法进阶与 unsafe 源码阅读](CSharp-Syntax-and-Unsafe-Memory.md)：表达式体、目标类型推断 new、对象初始化器、可选参数、record、switch/模式匹配、params、Trim、unsafe、指针与 fixed。
 
