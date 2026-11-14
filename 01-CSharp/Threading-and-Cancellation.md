@@ -444,15 +444,23 @@ catch (OperationCanceledException) when (token.IsCancellationRequested)
 
 Task.Delay(500, token) 在等待期间收到取消请求时会提前结束并以 OperationCanceledException 报告取消。若使用 Task.Delay(500) 不传 Token，取消请求不会中断这次延迟，循环只能等延迟结束后再检查。
 
-### 8.3 CTS 生命周期
+### 8.3 CTS 生命周期与等待边界
 
 - 创建 CTS；
 - 取出 Token 并传给所有相关工作；
-- 调用 Cancel 发出请求；
-- await/Join 等方式确认使用它的任务已经结束；
+- 调用 Cancel 发出协作式取消请求；
+- await/Join 等方式确认使用它的后台任务已经结束；
 - 最后 Dispose CTS。
 
-Dispose 不等于 Cancel。不要在后台任务仍可能使用 CTS/Token 注册资源时就提前 Dispose。using/using var 可以管理释放，但必须保证作用域退出前已经等待相关任务结束。
+要分清三个等待边界：
+
+- Cancel() 返回 void：只发出取消请求；注册回调通常在调用线程同步执行，不会替你等待代表整个工作的 workerTask。
+- .NET 8 的 CancelAsync() 返回 Task：异步等待 Token 关联的取消回调 / 可取消操作注册完成；它仍不等于 await workerTask。
+- await workerTask：等待后台工作本身完成、取消或失败；预期取消通常要捕获 OperationCanceledException。
+
+因此，常见顺序是先 Cancel / await CancelAsync，再 await workerTask，最后 Dispose CTS。Dispose 不等于 Cancel，也不会替你等待任务结束。不要在后台任务仍可能使用 CTS 或其取消注册时提前 Dispose。
+
+更完整的资源所有权、using / await using、IAsyncDisposable 和 WinForms 异步关闭模式见 [C# 资源生命周期专题](Resource-Lifecycle-and-Async-Disposal.md)。
 
 ### 8.4 WinForms 开始/停止模拟
 

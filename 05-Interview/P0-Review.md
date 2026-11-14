@@ -381,3 +381,24 @@
 12. **P0：Progress<T> 适合逐帧上报相机图像吗？** 不适合无节制高频投递；应限频、合并帧或使用有界队列，并遵守 SDK 缓冲区生命周期。
 
 以上为概念复习题；没有连接真实相机 SDK，也没有验证具体厂商回调线程或缓冲区规则。
+
+
+## 2026-11-14 C# 资源生命周期与异步释放（Q373–Q387）
+
+1. **P0：Dispose 和 GC 有什么区别？** Dispose 是资源所有者主动、确定性地清理对象管理的资源；GC 回收不可达托管对象内存，时机不确定。
+2. **P0：把 SerialPort 变量设为 null 能释放 COM 口吗？** 不能；null 只改变当前引用，不会调用 Dispose，也不保证对象没有其他引用。
+3. **P0：为什么 C# 托管对象也可能需要 Dispose？** 它可能包装 Windows 句柄、GDI+ 原生资源或设备 SDK 的原生句柄/缓冲区。
+4. **P0：IDisposable 定义什么？** 定义同步 Dispose() 方法，让对象所有者主动释放其拥有的资源。
+5. **P0：using 语句如何确保释放？** 编译器生成 try/finally，离开 using 块时调用 Dispose；异常和提前 return 也会经过清理路径。
+6. **P0：using var 什么时候释放？** 离开变量声明所在的当前作用域时释放，不是执行完声明所在那一行就释放。
+7. **P0：资源所有权决定什么？** 通常由创建并拥有资源的对象负责释放；借用外部资源的对象不能默认 Dispose 它。
+8. **P0：IAsyncDisposable 提供什么？** DisposeAsync()，返回 ValueTask，供释放过程需要异步等待的对象实现。
+9. **P0：await using 做什么？** 作用域结束时 await DisposeAsync；它不会自动把其他同步操作变成异步。
+10. **P0：CancellationTokenSource.Cancel() 会结束后台 Task 吗？** 不会；它发出协作式取消请求，后台任务必须检查 Token 或调用支持取消的 API。
+11. **P0：.NET 8 的 CancelAsync() 等待什么？** 等待 Token 关联的取消回调 / 可取消操作注册完成，不等于等待代表整个工作的 workerTask。
+12. **P0：如何确认后台任务真正结束？** await workerTask；预期取消时处理 OperationCanceledException，并观察其他异常。
+13. **P0：什么时候 Dispose CancellationTokenSource？** 相关后台任务响应取消并结束后，再 Dispose CTS。
+14. **P0：WinForms 如何在关闭前异步清理？** FormClosing 先同步设置 e.Cancel=true，再 await 清理；完成后设置允许关闭标记并重新 Close。
+15. **P1：Task.Dispose() 能停止后台任务吗？** 不能；Dispose 不是取消机制。常规业务代码应 await Task 并观察异常，通常无需显式 Dispose Task。
+
+关联：[C# 资源生命周期专题](../01-CSharp/Resource-Lifecycle-and-Async-Disposal.md)。内容为文字讲解与代码设计，尚未记录用户独立运行验证。
