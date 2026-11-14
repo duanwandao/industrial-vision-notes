@@ -67,6 +67,8 @@ await 不等于后台线程；停止等待不等于撤销已经发送的指令�
 
 窗体构造、设计器初始化、资源释放和可空类型见 [C# partial、WinForms 窗体生命周期与可空类型](WinForms-Lifecycle-and-Nullability.md)。尤其要区分取消后台任务、停止设备采集与 Dispose 资源：它们不是同一件事。
 
+资源所有权、IDisposable / using、IAsyncDisposable / await using，以及 Cancel、CancelAsync 和 await workerTask 的区别，详见 [C# 资源生命周期专题](Resource-Lifecycle-and-Async-Disposal.md)。
+
 
 ## 深入专题：线程、线程池与取消
 
