@@ -1,6 +1,6 @@
 # C# 线程、线程池、WinForms UI 封送与协作式取消
 
-> **P0｜待学习 / 待验证｜2026-11-06**
+> **P0｜待学习 / 待验证｜建立于 2026-11-06；更新至 2026-11-14**
 >
 > 面向 .NET 8 / C# 12 WinForms 工业上位机。本文是概念与模拟代码笔记；没有连接真实相机或 PLC。真实 SDK 的回调线程、采集停止、缓冲区所有权和释放规则必须以具体厂商/版本文档为准。
 
@@ -36,7 +36,40 @@ Windows 会向窗口所属线程投递窗口消息，例如鼠标按下、键盘
 
 消息循环不是“不断创建线程”，而是 UI 线程持续处理自己的消息队列。
 
-### 2.2 为什么 UI 线程不能做长时间同步工作
+### 2.2 HWND、Control.Handle 与窗口过程
+
+WinForms 的 Control 是 .NET 托管对象；HWND（窗口句柄）是 Windows 原生窗口对象的标识。二者相关，但不是同一个对象。
+
+- Control.Handle 的类型是 IntPtr，表示对应的原生窗口句柄。
+- 控件对象可以先被构造出来，底层 HWND 则可能延迟创建。
+- IsHandleCreated 只检查句柄是否已创建；读取 Handle 属性本身可能触发句柄创建，因此不要用读取 Handle 的方式来“单纯检查”句柄状态。
+- HandleCreated / HandleDestroyed 可观察句柄创建和销毁；某些操作可能导致句柄重建，不能把某个 HWND 值当作控件整个生命周期内永远有效的标识。
+- 不要为了调用 Invoke / BeginInvoke 而从工作线程主动读取 Handle 来触发创建。应先在 UI 线程完成窗体/控件初始化，再启动后台工作。
+
+标准 WinForms 启动代码中的 Application.Run(form) 在调用它的当前线程上运行消息循环，不会额外创建一个 UI 线程。通常 Main 所在的主线程就是 UI 线程。
+
+窗口过程（Window Procedure）是窗口接收并处理消息的入口。WinForms 可以通过重写 WndProc 观察或处理窗口消息：
+
+~~~csharp
+protected override void WndProc(ref Message m)
+{
+    const int WM_SIZE = 0x0005;
+
+    if (m.Msg == WM_SIZE)
+    {
+        Console.WriteLine("窗口尺寸发生变化");
+    }
+
+    base.WndProc(ref m);
+}
+~~~
+
+- m.Msg 是消息编号；Message 还包含 WParam、LParam 等消息参数。
+- base.WndProc(ref m) 让 WinForms 基类继续执行默认处理。除非明确要拦截并接管某条消息，否则不要随意省略。
+- GetMessage / TranslateMessage / DispatchMessage 是理解 Win32 消息循环的经典模型；WinForms 已经封装了消息循环，普通业务窗体不需要自己编写它。
+- 常见输入和窗口消息会排队等待线程处理；同步发送的消息也可能直接进入窗口过程，因此不要把“所有消息都先进同一个队列”当成绝对规则。
+
+### 2.3 为什么 UI 线程不能做长时间同步工作
 
 按钮事件通常由 UI 线程处理。如果事件处理器直接执行 Thread.Sleep、耗时计算、同步网络调用或长时间阻塞式设备调用，UI 线程就不能及时处理后续消息，表现为窗口卡顿、无法重绘或“未响应”。
 
@@ -508,7 +541,130 @@ private async void btnStop_Click(object? sender, EventArgs e)
 - 真实相机 SDK 的阻塞采集调用不一定支持 CancellationToken；应调用 SDK 明确提供的停止/中断 API，并按 SDK 约定处理回调退出和图像缓冲区所有权。
 - 真实设备的急停、限位、驱动器安全输入和 PLC 硬件互锁不能由上位机 CancellationToken 代替。
 
-## 9. 源码阅读补充：extern
+## 9. SynchronizationContext、await 上下文恢复与 Progress<T>
+
+### 9.1 SynchronizationContext 是什么
+
+SynchronizationContext 是 .NET 的调度抽象，提供 Post 和 Send 等方法，把回调安排到某个执行环境中。它本身不是线程，也不负责创建线程。
+
+- SynchronizationContext.Current：获取当前线程关联的同步上下文；没有上下文时可能为 null。
+- 在 WinForms 正常运行的 UI 线程中，当前上下文通常是 WindowsFormsSynchronizationContext。
+- 在线程池工作线程中，Current 通常为 null，但不要把这当成所有自定义调度环境下的绝对规则。
+- 应在 WinForms UI 上下文已经建立后（例如 Shown 事件中）捕获上下文；不要假设 Form 构造函数中一定已经有 WindowsFormsSynchronizationContext。
+
+~~~csharp
+private SynchronizationContext? _uiContext;
+
+protected override void OnShown(EventArgs e)
+{
+    base.OnShown(e);
+    _uiContext = SynchronizationContext.Current;
+}
+~~~
+
+### 9.2 Post 与 Send
+
+| 方法 | 调度方式 | 调用方是否等待 |
+|---|---|---|
+| Post | 异步投递回调 | 不等待回调执行完成 |
+| Send | 同步发送回调 | 通常等待回调完成；同线程场景可能直接执行 |
+
+WinForms 的 WindowsFormsSynchronizationContext 中，Post / Send 与 Control.BeginInvoke / Invoke 的用途相近，但不是所有上下文实现下都能视为完全等价。
+
+- Post 不会创建新线程；它仍依赖目标上下文有机会处理回调。UI 线程正在 Sleep 或执行长时间同步代码时，Post 的回调也只能等待。
+- Send 会同步等待 UI 线程执行回调。若 UI 线程同步等待工作线程，而工作线程又 Send 回 UI 线程，就可能形成死锁。
+- 相机 SDK 的工作线程回调需要更新状态时，可以将轻量 UI 更新 Post 回 UI 上下文；不要在回调线程直接操作 WinForms 控件。
+
+### 9.3 await 为什么通常能回到 UI 线程
+
+在 WinForms UI 事件处理器中，执行到一个尚未完成的 await 时，默认会尝试捕获当前的 SynchronizationContext。异步操作完成后，后续代码通常会被安排回之前捕获的 UI 上下文。
+
+~~~csharp
+private async void btnInspect_Click(object? sender, EventArgs e)
+{
+    lblStatus.Text = "检测中";
+
+    string result = await Task.Run(() =>
+    {
+        RunImageInspection(); // 仅示意：耗时计算在工作线程执行
+        return "检测完成";
+    });
+
+    // 默认恢复到 WinForms UI 上下文
+    lblStatus.Text = result;
+}
+~~~
+
+需要同时记住以下边界：
+
+1. Task.Run 负责把委托提交给线程池；await 本身不创建后台线程。
+2. 原生异步 I/O 通常直接 await，不需要为了“异步”再包一层 Task.Run。
+3. 若 await 时任务已经完成，后续代码可能直接在当前线程继续执行，不一定发生线程切换。
+4. 若没有捕获 UI 上下文，或使用了 ConfigureAwait(false)，就不能假设后续代码回到 UI 线程。
+5. 没有 SynchronizationContext 时，await continuation 还可能受当前 TaskScheduler 影响；不要把 await 简化成“永远回主线程”。
+
+### 9.4 ConfigureAwait(false)
+
+~~~csharp
+await ReadDeviceAsync().ConfigureAwait(false);
+~~~
+
+ConfigureAwait(false) 表示不要求 await 后续代码恢复到之前捕获的 SynchronizationContext。它不代表强制切换到线程池，也不保证一定换线程。
+
+- WinForms 事件处理器后面还要更新控件时，通常保留默认 await 行为。
+- 不负责 UI 的设备通信、数据处理等库代码，可以根据设计使用 ConfigureAwait(false)，减少对调用方 UI 上下文的依赖。
+- 使用 ConfigureAwait(false) 后，不要直接访问 WinForms 控件；需要 UI 更新时应显式切回 UI 上下文。
+
+### 9.5 Progress<T>：从后台任务汇报进度
+
+Progress<T> 在构造时捕获当前 SynchronizationContext。若在 WinForms UI 线程创建，之后即使从工作线程调用 Report，回调也会被投递到捕获的 UI 上下文。若创建时没有 SynchronizationContext，回调通常在线程池线程执行。
+
+~~~csharp
+private async void btnBatchInspect_Click(object? sender, EventArgs e)
+{
+    // 在 UI 线程创建，捕获 WinForms SynchronizationContext
+    var progress = new Progress<int>(percent =>
+    {
+        progressBar1.Value = Math.Clamp(percent, 0, 100);
+        lblStatus.Text = $"检测进度：{percent}%";
+    });
+
+    await Task.Run(() =>
+    {
+        for (int i = 1; i <= 100; i++)
+        {
+            InspectOneItem();
+            progress.Report(i);
+        }
+    });
+}
+~~~
+
+- Report 负责报告进度，不保证回调在 Report 返回前已经执行。
+- Progress<T> 适合批次进度、初始化进度等相对低频的状态更新。
+- 不要把每一帧相机图像都当作普通进度事件无节制地 Report。高帧率采集应考虑限频、合并更新、只保留最新帧或有界队列，避免 UI 回调积压。
+- 相机 SDK 图像缓冲区可能被重复使用。是否需要复制、何时释放或如何延长缓冲区生命周期，必须按具体 SDK 文档执行；不能把已失效的帧数据交给 UI 线程。
+
+### 9.6 UI 上下文投递与窗体生命周期
+
+~~~csharp
+private void PostToUi(Action action)
+{
+    var context = _uiContext;
+    if (context is null || IsDisposed || Disposing)
+        return;
+
+    context.Post(_ =>
+    {
+        if (!IsDisposed && !Disposing)
+            action();
+    }, null);
+}
+~~~
+
+这是简化示例：检查状态与 Post 之间仍可能发生窗体关闭竞争；回调也可能在窗口开始关闭后才执行。真实项目应在关闭时先停止相机/设备事件源、解除事件订阅、取消并等待后台任务收尾，再释放窗体和 SDK 资源。不要仅靠捕获异常来掩盖持续发生的生命周期问题。
+
+## 10. 源码阅读补充：extern
 
 在 .NET 源码中可能看到：
 
@@ -522,7 +678,7 @@ public static extern int CurrentManagedThreadId
 
 extern 表示成员实现不在当前 C# 方法体中。InternalCall 表示实现由 .NET Runtime 内部提供。它是运行时库实现细节，日常业务代码一般不需要自己声明 InternalCall。另一类 extern 常与 DllImport/P/Invoke 一起用于调用原生 DLL；extern 本身不等同于 DllImport。
 
-## 10. 推荐练习顺序
+## 11. 推荐练习顺序
 
 1. ThreadSafetyDemo：用 Parallel.For 多线程执行 counter++，观察结果可能小于期望值；改用 Interlocked.Increment，验证结果。
 2. LockDemo：用同一把 private readonly object 锁保护一组必须一起更新的字段。
@@ -532,7 +688,7 @@ extern 表示成员实现不在当前 C# 方法体中。InternalCall 表示实�
 6. WinFormsThreadDemo：在后台线程更新 Label，观察跨线程检查；再分别用 Invoke 和 BeginInvoke，比较调用方是否等待。
 7. 给 WinForms 模拟采集加 Stop，验证停止后可以重新开始，并在 FormClosing 时先取消、等待，再释放资源。
 
-## 11. 面试口述（P0）
+## 12. 面试口述（P0）
 
 - **WinForms 消息循环是什么？** UI 线程持续获取和分发窗口消息；Application.Run 启动消息循环，UI 线程执行耗时同步工作会延迟处理后续消息。
 - **InvokeRequired 是什么？** 判断调用线程是否需要封送到控件句柄所属线程；句柄尚未创建时结果有边界，不能盲目视为 UI 线程检测器。
@@ -549,7 +705,22 @@ extern 表示成员实现不在当前 C# 方法体中。InternalCall 表示实�
 - **Task.Run 的 Token 能中断已运行的委托吗？** 不能自动中断；它可阻止尚未启动的工作，已运行委托需要主动检查 Token。
 - **何时 Dispose CTS？** 相关任务完成并不再使用其取消资源后；Dispose 不等于 Cancel。
 
-## 12. 参考资料
+### WinForms 消息循环与 SynchronizationContext（P0）
+
+- **P0：Windows 消息循环是什么？** UI 线程持续获取并分发窗口消息；UI 线程执行长时间同步工作会延迟输入、重绘和其他消息处理。
+- **P0：Application.Run(form) 会创建 UI 线程吗？** 不会；它在调用它的当前线程上运行 WinForms 消息循环。
+- **P0：Control 与 HWND 有什么区别？** Control 是 .NET 托管控件对象；HWND 是 Windows 原生窗口句柄，可能延迟创建，也可能在生命周期中重建。
+- **P0：为什么读取 Handle 不是单纯查询？** Handle getter 可能触发原生句柄创建；只检查状态应使用 IsHandleCreated。
+- **P0：InvokeRequired 返回 false 就能证明当前是 UI 线程吗？** 不能；控件及父级句柄都未创建时，可能找不到可比较的句柄而返回 false。
+- **P1：WndProc 是什么？** 窗口处理消息的入口；重写时通常调用 base.WndProc(ref m) 保留 WinForms 默认处理。
+- **P0：SynchronizationContext 是线程吗？** 不是；它是把回调安排到特定执行环境的调度抽象。
+- **P0：Post 与 Send 有什么区别？** Post 异步投递且不等待；Send 同步发送并等待，跨线程互相等待时可能死锁。
+- **P0：await 为什么在 WinForms 中通常回到 UI 线程？** 默认捕获当前 UI SynchronizationContext；未完成任务结束后，后续通常安排回该上下文。
+- **P1：ConfigureAwait(false) 会强制切换到线程池吗？** 不会；它只是不要求恢复捕获的上下文。
+- **P0：Progress<T> 为什么能更新 UI？** 它在构造时捕获当前 SynchronizationContext，Report 会把回调安排到该上下文。
+- **P0：Progress<T> 适合承载每帧相机图像吗？** 不适合无节制高频上报；应限频/合并帧/使用有界队列，并遵守 SDK 缓冲区生命周期。
+
+## 13. 参考资料
 
 - [Microsoft Learn：WinForms 跨线程控件调用](https://learn.microsoft.com/en-us/dotnet/desktop/winforms/controls/how-to-make-thread-safe-calls)
 - [Microsoft Learn：Control.InvokeRequired](https://learn.microsoft.com/en-us/dotnet/api/system.windows.forms.control.invokerequired)
@@ -563,5 +734,13 @@ extern 表示成员实现不在当前 C# 方法体中。InternalCall 表示实�
 - [Microsoft Learn：volatile](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/volatile)
 - [Microsoft Learn：Interlocked](https://learn.microsoft.com/en-us/dotnet/api/system.threading.interlocked)
 - [Microsoft Learn：lock statement](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/statements/lock)
+
+- [Microsoft Learn：SynchronizationContext](https://learn.microsoft.com/en-us/dotnet/api/system.threading.synchronizationcontext)
+- [Microsoft Learn：WindowsFormsSynchronizationContext](https://learn.microsoft.com/en-us/dotnet/api/system.windows.forms.windowsformssynchronizationcontext)
+- [Microsoft Learn：Progress<T>](https://learn.microsoft.com/en-us/dotnet/api/system.progress-1)
+- [Microsoft Learn：ConfigureAwait FAQ](https://devblogs.microsoft.com/dotnet/configureawait-faq/)
+- [Microsoft Learn：Application.Run](https://learn.microsoft.com/en-us/dotnet/api/system.windows.forms.application.run)
+- [Microsoft Learn：Control.Handle](https://learn.microsoft.com/en-us/dotnet/api/system.windows.forms.control.handle)
+- [Microsoft Learn：Control.WndProc](https://learn.microsoft.com/en-us/dotnet/api/system.windows.forms.control.wndproc)
 
 > 学习状态：待学习 / 待验证。已进行文字讲解和概念问答，但尚未记录用户独立编译运行上述练习，也未连接真实相机 SDK 或 PLC。

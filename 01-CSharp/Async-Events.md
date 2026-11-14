@@ -36,7 +36,7 @@ int number = await task;
 
 WinForms 的消息循环负责鼠标、重绘和窗口消息。在 UI 线程 Sleep、同步网络调用或 `.Result/.Wait()` 会卡界面，后者还可能与上下文恢复互相等待。原生异步 I/O 优先直接 await；包装同步通信的 Task.Run 会占线程池线程，仍需超时和串行访问。
 
-UI 事件中的 await 默认捕获当前 WinForms 同步上下文，后续通常回 UI 线程；这不是所有 await 的通用保证。后台线程不能直接修改控件；可用 Invoke/BeginInvoke 将委托封送到控件所属线程。Invoke 同步等待，BeginInvoke 提交后立即返回。InvokeRequired 在控件句柄尚未创建时有边界，不能无条件视为 UI 线程检测器。当前 IndustrialVisionInspection 使用 .NET 8 WinForms；Control.InvokeAsync 是 .NET 9 新增 API，不能直接用于 .NET 8。
+UI 事件中的 await 默认尝试捕获当前 WinForms SynchronizationContext，等待未完成任务后续通常回 UI 线程；这不是所有 await 的通用保证。SynchronizationContext 不是线程；Post 异步投递，Send 同步等待。Progress<T> 在创建时捕获上下文，可用于低频批次进度汇报。后台线程不能直接修改控件；可用 Invoke/BeginInvoke 或捕获的 UI SynchronizationContext 投递回调。Invoke 同步等待，BeginInvoke 提交后立即返回。InvokeRequired 在控件及父级句柄尚未创建时可能返回 false，不能无条件视为 UI 线程检测器。高帧率相机图像不能无节制地逐帧投递 UI；需考虑限频、最新帧合并和 SDK 缓冲区生命周期。当前 IndustrialVisionInspection 使用 .NET 8 WinForms；Control.InvokeAsync 是 .NET 9 新增 API，不能直接用于 .NET 8。详见[线程与取消专题](Threading-and-Cancellation.md)中的消息循环、HWND、SynchronizationContext、ConfigureAwait 与 Progress<T>。
 
 `button.MouseDown += Handler` 是订阅；`button.Enabled = false` 是属性赋值。Click 发生于一次点击语义，按住 Jog 应分析 MouseDown/MouseUp 等订阅，而非只找 Click。订阅重复会执行多次；长期发布者持有短期订阅者时应适时 `-=`。
 
