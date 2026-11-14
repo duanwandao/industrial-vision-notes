@@ -1,5 +1,7 @@
 # 学习进度
 
+2026-11-14（WinForms 消息循环、控件句柄与 SynchronizationContext）：扩展 [C# 线程、线程池与取消专题](../01-CSharp/Threading-and-Cancellation.md)，补充 HWND/Control.Handle 的延迟创建与重建、Application.Run 与 WndProc、消息队列边界、InvokeRequired 无句柄陷阱、SynchronizationContext.Current/Post/Send、await 上下文捕获、ConfigureAwait(false)、Progress<T> 进度回调，以及高帧率相机 UI 更新与 SDK 缓冲区生命周期注意事项。新增 Inbox 原始记录、覆盖报告、P0 面试复习和 C# Anki Q361–Q372（12 张）。**状态待学习 / 待验证**：本轮完成文字讲解与概念问答；用户正确解释了 Invoke 委托中的 Sleep 会阻塞 UI、改为 BeginInvoke 仍不能解决委托本身阻塞 UI 的问题；控件句柄未创建时 InvokeRequired 可能返回 false 的陷阱已纠正。尚未记录用户独立编译运行、断点观察或真实相机 SDK 验证。下一步在 .NET 8 WinForms 小项目验证 UI 上下文、Post/Send、await/ConfigureAwait 与 Progress<T>，随后回到取消、设备 SDK 采集生命周期和完整项目整合。
+
 2026-11-13（C# record struct 与值/引用语义）：扩展 [C# 语法进阶专题](../01-CSharp/CSharp-Syntax-and-Unsafe-Memory.md) 的 record 部分，补充 class / record class / struct / record struct 的类型语义、赋值复制、自动生成成员、readonly、with 浅复制、匿名对象与 WinForms BindingList 可编辑模型选型；新增 C# Anki Q355–Q360（6 张）和 P0/P1 面试复习。**状态待学习 / 待验证**：已完成文字讲解，尚未在 .NET 8 独立编译对比值复制、readonly 编译错误和数组浅复制。下一步做 3 个小型 Console 对照实验，再回到 IndustrialVisionInspection 的可编辑 Light 模型。
 
 2026-11-12（C# SerialPort、SemaphoreSlim 与语言/内存语法）：新增 [SerialPort 与 SemaphoreSlim 专题](../01-CSharp/SerialPort-and-SemaphoreSlim.md)，覆盖串口生命周期、Write/WriteLine、ReadLine/ReadExisting、DataReceived 分帧、缓冲区清理风险、异步命令—响应互斥、ACK 与设备状态确认边界；新增 [C# 语法与 unsafe 源码阅读专题](../01-CSharp/CSharp-Syntax-and-Unsafe-Memory.md)，覆盖表达式体、目标类型推断 new、对象初始化器、可选参数、三元运算符、sealed record、switch 表达式、关系模式、params、Trim、unsafe/char*/fixed；扩展跨语言抽象笔记中的关注点分离/课题分离、驱动/SDK/协议层次。新增 Inbox、覆盖报告、P0/P1 面试题和 C# Anki Q328–Q354（27 张）。**状态待学习 / 待验证**：本轮为文字讲解与源码阅读；未记录用户独立编译 unsafe 示例、虚拟串口收发、DataReceived 分片/迟到响应测试或真实光源控制器验证。下一步先完成虚拟串口文本帧分片练习，再做 SemaphoreSlim 并发与超时恢复模拟；unsafe 单独在小型 Console 项目验证，不在设备主项目随意开启。
@@ -57,7 +59,7 @@
 |---|---|---|---|
 | C#/.NET 与 WinForms 工程开发 | 待学习 / 待验证 | P0 | 结合已有编程基础，完成可维护的设备上位机界面 |
 | C# 类型设计与参数传递 | 待学习 / 待验证 | P0 | abstract/virtual/override/new/sealed；ref/out/in；值类型与引用类型参数语义 |
-| 委托、事件、异步与 UI 线程 | 待学习 / 待验证 | P0 | Delegate/Event、消息循环、Invoke/BeginInvoke、ThreadPool、Task、async/await、竞态条件、Interlocked/lock/volatile、SemaphoreSlim、协作式取消 |
+| 委托、事件、异步与 UI 线程 | 待学习 / 待验证 | P0 | Delegate/Event、消息循环、HWND/Handle/WndProc、Invoke/BeginInvoke、SynchronizationContext/Post/Send、await/ConfigureAwait、Progress<T>、ThreadPool/Task、竞态条件、Interlocked/lock/volatile、SemaphoreSlim、协作式取消 |
 | C# 设备通信与串口事务 | 待学习 / 待验证 | P0 | SerialPort 生命周期、唯一读取入口、DataReceived/ReadExisting、协议分帧、ACK/超时、SemaphoreSlim 串行化；先虚拟串口后实机 |
 | 工业相机 SDK 与图像采集 | 待学习 | P0 | 枚举/连接、采集生命周期、软硬触发、回调、缓冲区；型号待确认 |
 | 成像基础：相机、镜头、光源、曝光 | 待学习 / 待验证 | P0 | 视野、工作距离、分辨率、景深；新增曝光窗口、频闪延时/脉宽、Exposure Active 与快门类型专题 |
@@ -73,7 +75,7 @@
 
 | 缺口 | 为什么重要 | 优先级 | 前置/小实验 |
 |---|---|---|---|
-| C# 异步、UI 线程与任务生命周期 | 采集和通信不能卡住界面；停止、关闭、断线时要能安全收尾 | P0 | 用 Task 模拟耗时采集/通信，练取消、异常和 UI 回切；用 SemaphoreSlim 保护异步设备事务 |
+| C# 异步、UI 线程与任务生命周期 | 采集和通信不能卡住界面；停止、关闭、断线时要能安全收尾 | P0 | 验证 UI SynchronizationContext、Post/Send、await 回切、Progress<T>；用 Task 模拟采集/通信，练取消、异常、关闭收尾和 SemaphoreSlim 事务保护 |
 | SerialPort 事件接收与协议分帧 | 事件不等于完整帧；并发读取会造成响应丢失或错配 | P0 | 虚拟串口对拆分响应片段；统一读取入口、应用层缓存、超时和迟到响应恢复 |
 | 工业相机 SDK 采集流程 | 相机连接、触发、回调、图像缓冲区是视觉上位机的入口 | P0 | 先确认实训相机品牌/型号/接口，再按对应 SDK 示例枚举、连接、采图和停止 |
 | 成像基础与光源同步 | 图像质量受镜头、视野、工作距离、光源、曝光和触发时序影响，算法无法弥补所有成像问题 | P0 | 阅读[曝光与 LED 频闪同步](../03-Machine-Vision/Exposure-and-Light-Source-Strobe-Synchronization.md)，确认相机/光源型号后再核对手册和时序 |

@@ -364,3 +364,20 @@
 5. **P1：为什么 WinForms 的可编辑绑定项通常不选可变 `record struct`？** 值复制容易导致修改副本不回写集合；类对象更方便保留身份并配合 `INotifyPropertyChanged` 通知变更。
 
 关联：[C# 语法专题（record 扩充）](../01-CSharp/CSharp-Syntax-and-Unsafe-Memory.md)和[参数传递专题](../01-CSharp/Parameter-Passing-Ref-Out-In.md)。当前仅理论整理，示例待用户独立运行验证。
+
+## 2026-11-14 WinForms 消息循环与 SynchronizationContext（Q361–Q372）
+
+1. **P0：Windows 消息循环是什么？** UI 线程持续获取并分发窗口消息；长时间同步工作会延迟输入、重绘和其他消息处理。
+2. **P0：Application.Run(form) 会创建 UI 线程吗？** 不会；它在调用它的当前线程上运行 WinForms 消息循环。
+3. **P0：Control 对象和 HWND 有什么区别？** Control 是 .NET 托管对象；HWND 是 Windows 原生窗口句柄，可能延迟创建或重建。
+4. **P0：为什么读取 Handle 不是单纯查询？** Handle getter 可能触发原生句柄创建；只检查状态使用 IsHandleCreated。
+5. **P0：InvokeRequired=false 一定代表 UI 线程吗？** 不一定；句柄尚未创建且父级也无句柄时可能返回 false。
+6. **P1：WndProc 是什么？** 窗口处理消息的入口；重写时通常调用 base.WndProc(ref m) 保留默认处理。
+7. **P0：SynchronizationContext 是什么？** 不是线程；它是把回调安排到特定执行环境的调度抽象。
+8. **P0：Post 与 Send 有什么区别？** Post 异步投递且不等待；Send 同步发送并等待，可能造成死锁。
+9. **P0：await 为什么通常回到 WinForms UI 线程？** 默认捕获当前 UI SynchronizationContext，未完成任务结束后后续通常安排回该上下文。
+10. **P1：ConfigureAwait(false) 会强制切换到线程池吗？** 不会；它只是不要求恢复捕获的上下文。
+11. **P0：Progress<T> 为什么能更新 UI？** 它在构造时捕获当前 SynchronizationContext，Report 将回调投递到该上下文。
+12. **P0：Progress<T> 适合逐帧上报相机图像吗？** 不适合无节制高频投递；应限频、合并帧或使用有界队列，并遵守 SDK 缓冲区生命周期。
+
+以上为概念复习题；没有连接真实相机 SDK，也没有验证具体厂商回调线程或缓冲区规则。

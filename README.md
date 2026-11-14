@@ -1,5 +1,7 @@
 # 工业机器视觉上位机学习知识库
 
+最新增量：[2026-11-14 WinForms 消息循环、控件句柄与 SynchronizationContext](07-Study-Plan/2026-11-14-CSharp-WinForms-MessageLoop-SynchronizationContext-Coverage.md)（扩展 HWND/Handle、WndProc、Application.Run、InvokeRequired 句柄边界、SynchronizationContext/Post/Send、await 上下文恢复、ConfigureAwait(false)、Progress<T>；Anki Q361–Q372；状态待学习/待验证）。
+
 最新增量：[2026-11-13 C# record struct、值类型与引用语义](01-CSharp/CSharp-Syntax-and-Unsafe-Memory.md#31-四种自定义类型的区别)（扩展类型对比、复制与 with 浅复制、readonly 与 WinForms 选型；Anki Q355–Q360；状态待学习/待验证）。
 
 近期增量：[2026-11-12 C# SerialPort、SemaphoreSlim 与语法/unsafe 源码阅读](07-Study-Plan/2026-11-12-CSharp-SerialPort-Unsafe-Trim-Coverage.md)（新增 SerialPort/异步串口事务专题、C# 语法与 unsafe 源码阅读专题；补充设备驱动与关注点分离边界；C# Anki Q328–Q354；状态待学习/待验证）。
